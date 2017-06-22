@@ -34,8 +34,8 @@ using namespace std;
 PLUGIN(InfinibandAnalysis)
 
 static const char * paramHelp[] = {
-        // File to Open
-        HTML_HELP_OPEN() \
+   // File to Open
+   HTML_HELP_OPEN() \
   /*HTML_HELP_DEF( "type", "pathname")*/ \
   HTML_HELP_BODY() \
   "Hello World" \
@@ -53,7 +53,7 @@ namespace ib = infiniband;
 namespace ibp = infiniband::parser;
 
 //Implementing min_distance
-int InfinibandAnalysis::nodes_map::min_distance(map<int, myNode*> map1, bool visited[]){
+int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nodes_map::myNode*> map1, bool visited[]){
     int min = INT_MAX;
     int min_index = 0;
 
@@ -65,18 +65,18 @@ int InfinibandAnalysis::nodes_map::min_distance(map<int, myNode*> map1, bool vis
     return min_index;
 }
 
-void InfinibandAnalysis::nodes_map::printResult(map<int, myNode*> map1) {
+void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nodes_map::myNode*> map1) {
     for(int i = 0; i<v; i++){
         cout<<i<<" is from: "<<map1[i]->getFrom()<<" its distance is: "<<map1[i]->getDist()<<endl;
     }
 }
 
 map<int,myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
-    map<int, myNode*> distmap;
+    map<int, InfinibandAnalysis::nodes_map::myNode*> distmap;
     bool visited[v];
 
     for (int i = 0; i < v; i++) {
-        distmap[i] = new myNode(i, INT_MAX);
+        distmap[i] = new InfinibandAnalysis::nodes_map::myNode(i, INT_MAX);
         visited[i] = false;
     }
     distmap[src]->setDist(0);
@@ -99,7 +99,7 @@ map<int,myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
     return distmap;
 }
 
-void InfinibandAnalysis::nodes_map::tracePath(map<int, myNode*> distmap, int target){
+void InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target){
     cout<<"the destination is: "<<target<<endl;
     int pos = target;
     for(int i = 0; i<v-1; i++){

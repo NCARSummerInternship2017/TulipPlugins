@@ -20,10 +20,13 @@
 
 #include<fstream>
 #include <algorithm>
+
 #include <tulip/TlpTools.h>
 #include <tulip/Graph.h>
 #include <tulip/GlScene.h>
 #include <tulip/GraphIterator.h>
+#include <tulip/BooleanProperty.h>
+
 #include "InfinibandAnalysis.h"
 
 #include "fabric.h"
@@ -206,10 +209,20 @@ bool InfinibandAnalysis::run()
        itnod->next();
         v++;
     }
+   
+    BooleanProperty *select = graph->getLocalProperty<BooleanProperty>("viewSelection");
+     
+    tlp::Iterator<node> *selections = select->getNodesEqualTo(true,NULL);
     
+    int myid = 0;
+    while(selections->hasNext()){
+        const node &mynode = selections->next();
+        myid = mynode.id;
+    }
+   
     nodes_map *graphAnalysis = new nodes_map(graph,v);
     //test first and then modify to select source by user
-    map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(0);
+    map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(myid);
 
     int max = 1;
     int avg = 1;

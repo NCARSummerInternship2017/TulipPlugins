@@ -221,7 +221,7 @@ bool InfinibandAnalysis::run()
    
     while(selections->hasNext()){
         const node &mynode = selections->next();
-        path_node[path_id++] = mynode.id; 
+        path_node[path_id++] = mynode.id;
     }
    
    if(path_id >1) found_path = true;
@@ -242,7 +242,6 @@ bool InfinibandAnalysis::run()
     cout<<""<<endl;
     if(found_path)
        graphAnalysis->tracePath(mymap,path_node[1]);
-      
    
     avg = (1+max)/2;
 

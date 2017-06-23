@@ -216,7 +216,7 @@ bool InfinibandAnalysis::run()
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
         max = std::max(max,mymap[i]->getDist());
-        cout<<"Node id: "i<<": "<<"The shortest distance: "mymap[i]->getDist()<<endl;
+        cout<<"Node id: "<<i<<" ---- The shortest distance: "<<mymap[i]->getDist()<<endl;
     }
     avg = (1+max)/2;
 

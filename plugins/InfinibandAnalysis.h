@@ -5,6 +5,7 @@
 #include <tulip/TlpTools.h>
 #include <tulip/Graph.h>
 #include <map>
+#include <vector>
 
 #ifndef TULIPTEST_MAIN_H
 #define TULIPTEST_MAIN_H
@@ -81,7 +82,7 @@ public:
     int min_distance(map<int, myNode*> map1, bool visited[]);
     map<int,myNode*> dijkstra(int src);
     void printResult(map<int, myNode*> map1);
-    void tracePath(map<int, myNode*> distmap, int target);
+    vector<int> tracePath(map<int, myNode*> distmap, int target);
     };
 
     bool run();

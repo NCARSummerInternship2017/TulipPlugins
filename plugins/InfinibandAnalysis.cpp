@@ -214,15 +214,21 @@ bool InfinibandAnalysis::run()
      
     tlp::Iterator<node> *selections = select->getNodesEqualTo(true,NULL);
     
-    int myid = 0;
+    int path_node[2];
+    path_node[1]=0;// Default source node is 0
+    int path_id = 0;
+    bool found_path = false;
+   
     while(selections->hasNext()){
         const node &mynode = selections->next();
-        myid = mynode.id;
+        path_node[path_id++] = mynode.id; 
     }
+   
+   if(path_id >1) found_path = true;
    
     nodes_map *graphAnalysis = new nodes_map(graph,v);
     //test first and then modify to select source by user
-    map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(myid);
+    map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
     int avg = 1;
@@ -231,6 +237,13 @@ bool InfinibandAnalysis::run()
         max = std::max(max,mymap[i]->getDist());
         cout<<"Node id: "<<i<<" ---- The shortest distance: "<<mymap[i]->getDist()<<endl;
     }
+   
+    cout<<"*************************************************************************"<<endl;
+    cout<<""<<endl;
+    if(found_path)
+       graphAnalysis->tracePath(mymap,path_node[1]);
+      
+   
     avg = (1+max)/2;
 
     tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");

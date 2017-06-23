@@ -193,6 +193,7 @@ bool InfinibandAnalysis::run()
     int v = 0;
 
     while(itnod->hasNext()){
+       tlp::node = itnod->next();
         v++;
     }
 

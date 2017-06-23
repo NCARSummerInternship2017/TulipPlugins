@@ -71,7 +71,7 @@ void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nod
     }
 }
 
-map<int,myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
+map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
     map<int, InfinibandAnalysis::nodes_map::myNode*> distmap;
     bool visited[v];
 

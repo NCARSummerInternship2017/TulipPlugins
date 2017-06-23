@@ -216,7 +216,7 @@ bool InfinibandAnalysis::run()
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
         max = std::max(max,mymap[i]->getDist());
-        cout<<i<<": "<<mymap[i]->getDist()<<endl;
+        cout<<"Node id: "i<<": "<<"The shortest distance: "mymap[i]->getDist()<<endl;
     }
     avg = (1+max)/2;
 
@@ -231,7 +231,7 @@ bool InfinibandAnalysis::run()
     tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
     while(itnodes->hasNext()){
         const tlp::node &node = itnodes->next();
-        const int &temp = mymap[itnodes->next().id]->getDist();
+        const int &temp = mymap[node.id]->getDist();
         ibHop->setNodeValue(node, temp);
     }
 

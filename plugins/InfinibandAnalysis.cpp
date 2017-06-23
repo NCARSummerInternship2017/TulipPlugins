@@ -189,7 +189,7 @@ bool InfinibandAnalysis::run()
      * calculate routes outbound
      * from every port on the fabric
      */
-    tlp::Iterator<node> *itnod = graph->getNodes();
+    tlp::Iterator<tlp::node> *itnod = graph->getNodes();
     int v = 0;
 
     while( itnod->hasNext()){

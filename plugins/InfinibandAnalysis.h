@@ -14,7 +14,7 @@ using namespace std;
 
 class InfinibandAnalysis: public tlp::Algorithm{
 public:
-    PLUGININFORMATION("My Infiniband Topology test",
+    PLUGININFORMATION("InfinibandAnalysis",
     "zzl",
     "06/21/17",
     "Import IB and change some of its porperties",

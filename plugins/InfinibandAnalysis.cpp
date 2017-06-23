@@ -18,14 +18,17 @@
  *
  */
 
-#include<fstream>
+#include <fstream>
 #include <algorithm>
+#include <vector>
 
 #include <tulip/TlpTools.h>
 #include <tulip/Graph.h>
 #include <tulip/GlScene.h>
 #include <tulip/GraphIterator.h>
 #include <tulip/BooleanProperty.h>
+#include <ColorProperty.h>
+#include <SizeProperty.h>
 
 #include "InfinibandAnalysis.h"
 
@@ -106,16 +109,20 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
     return distmap;
 }
 
-void InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target){
+vector<int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target){
     cout<<"the destination is: "<<target<<endl;
+    vector<int> path;
     int pos = target;
     for(int i = 0; i<v-1; i++){
-        cout<<"next step is: "<<distmap[pos]->getFrom()<<" ";
-        pos = distmap[pos]->getFrom();
-        if(pos == 0)
-            break;
+       path.push_back(pos);
+       cout<<"next step is: "<<distmap[pos]->getFrom()<<" ";
+       pos = distmap[pos]->getFrom();
+       if(pos == 0)
+           break;
     }
     cout<<" "<<endl;
+   
+   return path;
 }
 
 
@@ -210,8 +217,8 @@ bool InfinibandAnalysis::run()
         v++;
     }
    
-    BooleanProperty *select = graph->getLocalProperty<BooleanProperty>("viewSelection");
-     
+    BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection");
+   
     tlp::Iterator<node> *selections = select->getNodesEqualTo(true,NULL);
     
     int path_node[2];

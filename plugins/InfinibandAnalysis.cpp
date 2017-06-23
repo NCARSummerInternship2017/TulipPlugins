@@ -23,7 +23,6 @@
 #include <tulip/TlpTools.h>
 #include <tulip/Graph.h>
 #include <tulip/GlScene.h>
-#include <tulip/GraphImpl.h>
 #include <tulip/GraphIterator.h>
 #include "InfinibandAnalysis.h"
 
@@ -194,6 +193,12 @@ bool InfinibandAnalysis::run()
      * calculate routes outbound
      * from every port on the fabric
      */
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Calculating Route oversubscription.");
+        pluginProgress->progress(4, STEPS);
+    }
+   
     tlp::Iterator<tlp::node> *itnod = graph->getNodes();
     int v = 0;
 
@@ -220,7 +225,7 @@ bool InfinibandAnalysis::run()
     if(pluginProgress)
     {
         pluginProgress->setComment("Show the max min average steps");
-        pluginProgress->progress(4, STEPS);
+        pluginProgress->progress(5, STEPS);
     }
 
     tlp::Iterator<tlp::node> *itnodes = graph->getNodes();

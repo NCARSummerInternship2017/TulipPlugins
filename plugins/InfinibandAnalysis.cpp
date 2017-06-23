@@ -20,6 +20,7 @@
 
 #include<fstream>
 #include <algorithm>
+#include <tulip/GlScene.h>
 #include "InfinibandAnalysis.h"
 
 #include "fabric.h"
@@ -189,14 +190,14 @@ bool InfinibandAnalysis::run()
      * calculate routes outbound
      * from every port on the fabric
      */
-    tlp::Iterator<tlp::node> *itnod = graph->getNodes();
+    /*tlp::Iterator<tlp::node> *itnod = graph->getNodes();
     int v = 0;
 
     while(itnod->hasNext()){
        itnod->next();
         v++;
-    }
-
+    }*/
+    int v = 101;
     nodes_map *graphAnalysis = new nodes_map(graph,v);
     //test first and then modify to select source by user
     map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(0);

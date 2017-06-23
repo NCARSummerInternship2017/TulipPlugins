@@ -192,8 +192,7 @@ bool InfinibandAnalysis::run()
     tlp::Iterator<tlp::node> *itnod = graph->getNodes();
     int v = 0;
 
-    while( itnod->hasNext()){
-        node n = itnod->next();
+    while(itnod->hasNext()){
         v++;
     }
 

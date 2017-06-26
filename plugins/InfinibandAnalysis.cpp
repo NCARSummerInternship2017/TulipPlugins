@@ -108,9 +108,9 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
     return distmap;
 }
 
-vector<int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
+vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
     cout<<"the destination is: "<<target<<endl;
-    vector<int> path;
+    vector<unsigned int> path;
     int pos = target;
     for(int i = 0; i<v-1; i++){
        path.push_back(pos);
@@ -218,7 +218,7 @@ bool InfinibandAnalysis::run()
    
     BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection");
    
-    tlp::Iterator<node> *selections = select->getNodesEqualTo(true,NULL);
+    tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL);
     
     int path_node[2];
     path_node[1]=0;// Default source node is 0
@@ -246,7 +246,7 @@ bool InfinibandAnalysis::run()
    
     cout<<"*************************************************************************"<<endl;
     cout<<""<<endl;
-    std::vector<int> mypath;
+    std::vector<unsigned int> mypath;
    
     avg = (1+max)/2;
 
@@ -275,7 +275,7 @@ bool InfinibandAnalysis::run()
        
        while(itnodes->hasNext()){
           const tlp::node &node = itnodes->next();
-          for(int ID : mypath){
+          for(unsigned int ID : mypath){
              if(node.id == ID){
                 resetColor->setNodeValue(node, Color::SpringGreen);
              }

@@ -109,7 +109,7 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
     return distmap;
 }
 
-vector<int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target){
+vector<int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
     cout<<"the destination is: "<<target<<endl;
     vector<int> path;
     int pos = target;
@@ -117,7 +117,7 @@ vector<int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis
        path.push_back(pos);
        cout<<"next step is: "<<distmap[pos]->getFrom()<<" ";
        pos = distmap[pos]->getFrom();
-       if(pos == 0)
+       if(pos == src)
            break;
     }
     cout<<" "<<endl;
@@ -247,13 +247,13 @@ bool InfinibandAnalysis::run()
    
     cout<<"*************************************************************************"<<endl;
     cout<<""<<endl;
-    if(found_path)
-       graphAnalysis->tracePath(mymap,path_node[1]);
+    std::vector<int> mypath;
    
     avg = (1+max)/2;
 
     tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
     assert(ibHop);
+   
     if(pluginProgress)
     {
         pluginProgress->setComment("Show the max min average steps");
@@ -267,6 +267,23 @@ bool InfinibandAnalysis::run()
         ibHop->setNodeValue(node, temp);
     }
 
+    //show the found_path in the tulip
+    if(found_path)
+    {
+       mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
+       tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
+       itnodes = graph->getNodes();
+       
+       while(itnodes->hasNext()){
+          const tlp::node &node = itnodes->next();
+          for(int ID : mypath){
+             if(node.id == ID){
+                resetColor->setNodeValue(node, Color::SpringGreen);
+             }
+          }
+       }
+    }
+   
     if(pluginProgress)
     {
         pluginProgress->setComment("Calculating Route oversubscription complete.");

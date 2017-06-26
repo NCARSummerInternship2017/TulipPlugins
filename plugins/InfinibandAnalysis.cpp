@@ -27,8 +27,7 @@
 #include <tulip/GlScene.h>
 #include <tulip/GraphIterator.h>
 #include <tulip/BooleanProperty.h>
-#include <ColorProperty.h>
-#include <SizeProperty.h>
+#include <tulip/ColorProperty.h>
 
 #include "InfinibandAnalysis.h"
 

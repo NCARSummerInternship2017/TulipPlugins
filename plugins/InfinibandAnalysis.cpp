@@ -54,7 +54,7 @@ static const char * paramHelp[] = {
 InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-    addInParameter<std::string>("file::filename", paramHelp[0],"");
+    //addInParameter<std::string>("file::filename", paramHelp[0],"");
 
 }
 
@@ -74,12 +74,14 @@ int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nod
     return min_index;
 }
 
+//Printing the route
 void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nodes_map::myNode*> map1) {
     for(int i = 0; i<v; i++){
         cout<<i<<" is from: "<<map1[i]->getFrom()<<" its distance is: "<<map1[i]->getDist()<<endl;
     }
 }
 
+//Implementing Dijkstra's Algorithm
 map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
     map<int, InfinibandAnalysis::nodes_map::myNode*> distmap;
     bool visited[v];
@@ -132,11 +134,11 @@ bool InfinibandAnalysis::run()
 {
     assert(graph);
 
-    static const size_t STEPS = 5;
+    static const size_t STEPS = 4;
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
-        pluginProgress->setComment("Starting to Import Routes");
+        pluginProgress->setComment("Implementing Dijkstra's algorithm on the nodes...");
         pluginProgress->progress(0, STEPS);
     }
 
@@ -146,67 +148,30 @@ bool InfinibandAnalysis::run()
      * for an existing fabric
      */
 
-    ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-    if(!fabric)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
-
-        return false;
-    }
-
+    
+   
     if(pluginProgress)
     {
-        pluginProgress->setComment("Found Fabric");
+        pluginProgress->setComment("Running...");
         pluginProgress->progress(1, STEPS);
     }
 
     /**
      * Open file to read and import per type
      */
-    std::string filename;
+    
 
-    dataSet->get("file::filename", filename);
-    std::ifstream ifs(filename.c_str());
-    if(!ifs)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable open source file.");
-
-        return false;
-    }
-
+    
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Parsing Routes.");
+        pluginProgress->setComment("Calculating the number of nodes..");
     }
 
-    ibp::ibdiagnet_fwd_db parser;
-    /*if(!parser.parse(*fabric, ifs))
-    {
-      if(pluginProgress)
-        pluginProgress->setError("Unable parse routes file.");
-      return false;
-    }*/
+   
+  
+  
 
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Parsing Routes complete.");
-        pluginProgress->progress(3, STEPS);
-    }
-
-    ifs.close();
-
-    /**
-     * calculate routes outbound
-     * from every port on the fabric
-     */
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Calculating Route oversubscription.");
-        pluginProgress->progress(4, STEPS);
-    }
    
     tlp::Iterator<tlp::node> *itnod = graph->getNodes();
     int v = 0;
@@ -214,6 +179,12 @@ bool InfinibandAnalysis::run()
     while(itnod->hasNext()){
        itnod->next();
         v++;
+    }
+   
+   if(pluginProgress)
+    {
+        pluginProgress->progress(3, STEPS);
+        pluginProgress->setComment("Using BooleanProperty to update viewSelection..");
     }
    
     BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection");
@@ -233,7 +204,7 @@ bool InfinibandAnalysis::run()
    if(path_id >1) found_path = true;
    
     nodes_map *graphAnalysis = new nodes_map(graph,v);
-    //test first and then modify to select source by user
+    //test first and modify to select source by user
     map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
@@ -256,7 +227,7 @@ bool InfinibandAnalysis::run()
     if(pluginProgress)
     {
         pluginProgress->setComment("Show the max min average steps");
-        pluginProgress->progress(5, STEPS);
+        pluginProgress->progress(4, STEPS);
     }
 
     tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
@@ -286,7 +257,7 @@ bool InfinibandAnalysis::run()
    
     if(pluginProgress)
     {
-        pluginProgress->setComment("Calculating Route oversubscription complete.");
+        pluginProgress->setComment("Dijkstra's Algorithm implemented...");
         pluginProgress->progress(STEPS, STEPS);
     }
 

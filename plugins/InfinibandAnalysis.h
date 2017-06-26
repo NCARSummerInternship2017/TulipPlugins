@@ -82,7 +82,7 @@ public:
     int min_distance(map<int, myNode*> map1, bool visited[]);
     map<int,myNode*> dijkstra(int src);
     void printResult(map<int, myNode*> map1);
-    vector<int> tracePath(map<int, myNode*> distmap, int target,int src);
+    vector<unsigned int> tracePath(map<int, myNode*> distmap, int target,int src);
     };
 
     bool run();

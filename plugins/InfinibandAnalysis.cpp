@@ -278,6 +278,7 @@ bool InfinibandAnalysis::run()
           for(unsigned int ID : mypath){
              if(node.id == ID){
                 resetColor->setNodeValue(node, Color::SpringGreen);
+                selectBool->setNodeValue(node, true);
              }
           }
        }

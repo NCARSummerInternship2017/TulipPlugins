@@ -16,9 +16,9 @@ using namespace std;
 class InfinibandAnalysis: public tlp::Algorithm{
 public:
     PLUGININFORMATION("InfinibandAnalysis",
-    "zzl",
+    "Ananta Thapaliya & Zenzhen Liu",
     "06/21/17",
-    "Import IB and change some of its porperties",
+    "Applies Dijkstra's algorithm on Tulip Graph",
     "alpha",
     "Infiniband")
 

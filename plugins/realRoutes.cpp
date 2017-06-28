@@ -32,7 +32,7 @@ HTML_HELP_CLOSE()
 
 static const string IMPORT_TYPE_STRING=  "print the routing path";
 
-RouteAnalysis::RouteAnalysis(tlp::PluginContext *context)
+realRoutes::RouteAnalysis(tlp::PluginContext *context)
         : tlp::Algorithm(context){
     addInParameter<tlp::StringCollection>("Test",paramHelp[0],IMPORT_TYPE_STRING);
 }
@@ -40,7 +40,7 @@ RouteAnalysis::RouteAnalysis(tlp::PluginContext *context)
 namespace ib = infiniband;
 namespace ibp = infiniband::parser;
 
-bool RouteAnalysis::run(){
+bool realRoutes::run(){
     assert(graph);
 
     static const size_t STEPS=4;

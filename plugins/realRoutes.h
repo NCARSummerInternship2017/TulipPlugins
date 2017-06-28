@@ -25,18 +25,18 @@
 #ifndef IB_ROUTES_H
 #define IB_ROUTES_H
 
-class HelloWorld: public tlp::Algorithm {
+class realRoutes: public tlp::Algorithm {
 
 
 public:
-    PLUGININFORMATION("HelloWorld",
+    PLUGININFORMATION("realRoutes",
     "Ananta",
     "06/16/15",
     "HelloWorld Program.",
     "alpha",
     "Infiniband")
 
-    HelloWorld(tlp::PluginContext* context);
+    realRoutes(tlp::PluginContext* context);
 
     /**
      * @brief import infiniband routes

@@ -19,10 +19,10 @@
 using namespace std;
 using namespace tlp;
 
-PLUGIN(RouteAnalysis)
+PLUGIN(realRoutes)
 
 static const char * paramHelp[]={
-        HTML_HELP_OPEN() \
+HTML_HELP_OPEN() \
 HTML_HELP_DEF("type","String")\
 HTML_HELP_DEF("values","print the routing path")\
 HTML_HELP_DEF("default","print the routing path")\
@@ -74,6 +74,7 @@ bool RouteAnalysis::run(){
     tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL);
 
     int count = 0;
+    const tlp::node & tmp = 0; 
     while(selections->hasNext()){
         const tlp::node & tmp = selections->next();
         count++;
@@ -97,7 +98,7 @@ bool RouteAnalysis::run(){
     }
 
 
-    const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
+    const ib::fabric_t::entities_t *entities_map = fabric->get_entities();
 
     const ib::entity_t & source_node = entities_map.at(std::strtoull(getGuid->getNodeStringValue(nodes_guid[0]), NULL, 0));
     const ib::entity_t & target_node = entities_map.at(std::strtoull(getGuid->getNodeStringValue(nodes_guid[1]), NULL, 0));

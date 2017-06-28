@@ -236,6 +236,8 @@ bool InfinibandAnalysis::run()
         const int &temp = mymap[node.id]->getDist();
         ibHop->setNodeValue(node, temp);
     }
+   
+   vector<node> nodesToEdges; 
 
     //show the found_path in the tulip
     if(found_path)
@@ -244,16 +246,30 @@ bool InfinibandAnalysis::run()
        tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
        itnodes = graph->getNodes();
        
+       
        while(itnodes->hasNext()){
           const tlp::node &node = itnodes->next();
           for(unsigned int ID : mypath){
              if(node.id == ID){
                 resetColor->setNodeValue(node, Color::SpringGreen);
                 selectBool->setNodeValue(node, true);
+                nodesToEdges.push_back(node);
              }
           }
        }
     }
+    
+     for (node n1: nodesToEdges){
+        for (node n2: nodesToEdges){
+           if ((graph->hasEdge(n1,n2,true) && n1.id!=n2.id){
+              edges = graph->getEdges(n1,n2);
+              const tlp::edge &e = edges[0];
+              resetColor->setEdgeValue(e, Color:SpringGreen);
+           }
+        }
+     }
+       
+       
    
     if(pluginProgress)
     {

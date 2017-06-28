@@ -261,7 +261,7 @@ bool InfinibandAnalysis::run()
     
      for (node n1: nodesToEdges){
         for (node n2: nodesToEdges){
-           if ((graph->hasEdge(n1,n2,true) && n1.id!=n2.id){
+           if ((graph->hasEdge(n1,n2,true)) && (n1.id!=n2.id)){
               edges = graph->getEdges(n1,n2);
               const tlp::edge &e = edges[0];
               resetColor->setEdgeValue(e, Color:SpringGreen);

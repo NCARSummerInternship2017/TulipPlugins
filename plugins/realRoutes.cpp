@@ -99,9 +99,13 @@ bool realRoutes::run(){
 
 
     const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
+        
+    const unsigned long &int key1 = std::stol((getGuid->getNodeStringValue(nodes_guid[0])),NULL,0);
+    const unsigned long &int key2 = std::stol((getGuid->getNodeStringValue(nodes_guid[1])),NULL,0);
+    
 
-    const ib::entity_t & source_node = entities_map[(getGuid->getNodeStringValue(nodes_guid[0]))];
-    const ib::entity_t & target_node = entities_map[(getGuid->getNodeStringValue(nodes_guid[1]))];
+    const ib::entity_t & source_node = entities_map[key1];
+    const ib::entity_t & target_node = entities_map[key2];
 
     if (pluginProgress) {
         pluginProgress->setComment("Found path source and target");

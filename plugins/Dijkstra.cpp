@@ -29,7 +29,7 @@
 #include <tulip/BooleanProperty.h>
 #include <tulip/ColorProperty.h>
 
-#include "InfinibandAnalysis.h"
+#include "Dijkstra.h"
 
 #include "fabric.h"
 #include "ibautils/ib_fabric.h"

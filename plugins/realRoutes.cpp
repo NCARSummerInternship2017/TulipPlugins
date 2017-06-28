@@ -32,7 +32,7 @@ HTML_HELP_CLOSE()
 
 static const string IMPORT_TYPE_STRING=  "print the routing path";
 
-realRoutes::RouteAnalysis(tlp::PluginContext *context)
+realRoutes::realRoutes(tlp::PluginContext *context)
         : tlp::Algorithm(context){
     addInParameter<tlp::StringCollection>("Test",paramHelp[0],IMPORT_TYPE_STRING);
 }

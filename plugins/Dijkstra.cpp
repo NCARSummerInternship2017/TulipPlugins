@@ -265,7 +265,7 @@ bool InfinibandAnalysis::run()
            if ((graph->hasEdge(n1,n2,true)) && (n1.id!=n2.id)){
               vector<edge> edges = graph->getEdges(n1,n2);
               const tlp::edge &e = edges[0];
-              resetColor->setEdgeValue(e, Color:SpringGreen);
+              resetColor->setEdgeValue(e, Color::SpringGreen);
            }
         }
      }

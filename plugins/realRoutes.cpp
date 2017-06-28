@@ -104,8 +104,8 @@ bool realRoutes::run(){
     const unsigned long int key2 = std::stol((getGuid->getNodeStringValue(nodes_guid[1])),NULL,0);
     
 
-    const ib::entity_t & source_node = entities_map[key1];
-    const ib::entity_t & target_node = entities_map[key2];
+    const ib::entity_t & source_node = entities_map.at(key1);
+    const ib::entity_t & target_node = entities_map.at(key2);
 
     if (pluginProgress) {
         pluginProgress->setComment("Found path source and target");

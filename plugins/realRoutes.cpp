@@ -74,7 +74,7 @@ bool realRoutes::run(){
     tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL);
 
     int count = 0;
-    const tlp::node & tmp; 
+     
     while(selections->hasNext()){
         const tlp::node & tmp = selections->next();
         count++;
@@ -100,8 +100,8 @@ bool realRoutes::run(){
 
     const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
 
-    const ib::entity_t & source_node = entities_map[(std::atoll(getGuid->getNodeStringValue(nodes_guid[0])];
-    const ib::entity_t & target_node = entities_map[(std::atoll(getGuid->getNodeStringValue(nodes_guid[1])];
+    const ib::entity_t & source_node = entities_map[(std::atoll(getGuid->getNodeStringValue(nodes_guid[0]))];
+    const ib::entity_t & target_node = entities_map[(std::atoll(getGuid->getNodeStringValue(nodes_guid[1]))];
 
     if (pluginProgress) {
         pluginProgress->setComment("Found path source and target");

@@ -238,12 +238,13 @@ bool InfinibandAnalysis::run()
     }
    
    vector<node> nodesToEdges; 
+   tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
 
     //show the found_path in the tulip
     if(found_path)
     {
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
-       tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
+       
        itnodes = graph->getNodes();
        
        

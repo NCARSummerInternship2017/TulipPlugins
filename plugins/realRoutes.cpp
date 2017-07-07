@@ -22,11 +22,11 @@ using namespace tlp;
 PLUGIN(realRoutes)
 
 static const char * paramHelp[] = {
-  // File to Open
-  HTML_HELP_OPEN() \
-  //HTML_HELP_DEF( "type", "pathname" ) \
+   // File to Open
+   HTML_HELP_OPEN() \
+  /*HTML_HELP_DEF( "type", "pathname")*/ \
   HTML_HELP_BODY() \
-  "Path to ibdiagnet2.fdbs file to import" \
+  "Hello World" \
   HTML_HELP_CLOSE()
 };
 
@@ -34,6 +34,7 @@ realRoutes::realRoutes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
     //addInParameter<std::string>("file::filename", paramHelp[0],"");
+
 }
 
 

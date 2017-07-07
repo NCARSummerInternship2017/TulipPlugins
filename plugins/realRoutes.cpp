@@ -19,7 +19,7 @@
 using namespace std;
 using namespace tlp;
 
-PLUGIN(RouteAnalysis_All)
+PLUGIN(realRoutes)
 
 static const char * paramHelp[] = {
   // File to Open

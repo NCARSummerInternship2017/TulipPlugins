@@ -39,7 +39,7 @@ class realRoutes: public tlp::Algorithm{
                       "alphe",
                       "Infiniband");
 public:
-    RouteAnalysis_All(tlp::PluginContext* context);
+    realRoutes(tlp::PluginContext* context);
 
     bool run();
     unsigned int count_hops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph);

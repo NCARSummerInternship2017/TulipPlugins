@@ -220,17 +220,7 @@ bool realRoutes::run(){
     /**
      * Open file to read and import per type
      */
-    std::string filename;
-
-    dataSet->get("file::filename", filename);
-    std::ifstream ifs(filename.c_str());
-    if(!ifs)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable open source file.");
-
-        return false;
-    }
+   
 
     if(pluginProgress)
     {
@@ -239,21 +229,14 @@ bool realRoutes::run(){
     }
 
     ibp::ibdiagnet_fwd_db parser;
-    if(!parser.parse(*fabric, ifs))
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable parse routes file.");
-
-        return false;
-    }
-
+    
     if(pluginProgress)
     {
         pluginProgress->setComment("Parsing Routes complete.");
         pluginProgress->progress(3, STEPS);
     }
 
-    ifs.close();
+   
 
 
     if (pluginProgress) {

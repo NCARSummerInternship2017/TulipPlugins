@@ -18,33 +18,29 @@
  *
  */
 
-#pragma once
-
 #include <tulip/TulipPluginHeaders.h>
+#include <tulip/TlpTools.h>
+#include <tulip/Graph.h>
+#include "fabric.h"
+#include <map>
 
-#ifndef IB_ROUTES_H
-#define IB_ROUTES_H
+#ifndef TULIPTEST_ROUTEANALYSIS_H
+#define TULIPTEST_ROUTEANALYSIS_H
 
-class realRoutes: public tlp::Algorithm {
+namespace ib = infiniband;
 
-
+class realRoutes: public tlp::Algorithm{
+    PLUGININFORMATION("Count the number of hops for the real routes",
+                      "zz",
+                      "06/27/2017",
+                      "print out the real routing path",
+                      "alphe",
+                      "Infiniband");
 public:
-    PLUGININFORMATION("realRoutes",
-    "Ananta",
-    "06/16/15",
-    "HelloWorld Program.",
-    "alpha",
-    "Infiniband")
-
     realRoutes(tlp::PluginContext* context);
 
-    /**
-     * @brief import infiniband routes
-     * @warning currently only works if static data is retained from import
-     */
-
-
     bool run();
+    unsigned int count_myhops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph);
 };
+#endif //TULIPTEST_ROUTEANALYSIS_H
 
-#endif // IB_ROUTES_H

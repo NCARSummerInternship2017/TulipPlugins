@@ -18,7 +18,9 @@
  *
  */
 
+
 #include <tulip/TulipPluginHeaders.h>
+#include <tulip/StringProperty.h>
 #include <tulip/TlpTools.h>
 #include <tulip/Graph.h>
 #include "fabric.h"
@@ -30,17 +32,22 @@
 namespace ib = infiniband;
 
 class realRoutes: public tlp::Algorithm{
-    PLUGININFORMATION("Count the number of hops for the real routes",
+    PLUGININFORMATION("Real Routes (Infiniband)",
                       "zz",
                       "06/27/2017",
                       "print out the real routing path",
                       "alphe",
                       "Infiniband");
 public:
-    realRoutes(tlp::PluginContext* context);
+    RouteAnalysis_All(tlp::PluginContext* context);
 
     bool run();
-    unsigned int count_myhops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph);
+    unsigned int count_hops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph);
+    unsigned int help_count(ib::tulip_fabric_t * const fabric, tlp::Graph * const graph,
+                            std::vector<ib::entity_t *> tmp, const ib::entity_t * real_target,
+                            ib::lid_t target_lid, tlp::StringProperty *getGuid);
 };
 #endif //TULIPTEST_ROUTEANALYSIS_H
+
+
 

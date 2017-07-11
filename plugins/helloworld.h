@@ -28,7 +28,7 @@ class HelloWorld: public tlp::Algorithm {
 
   
 public:
-  PLUGININFORMATION("helloworld",
+  PLUGININFORMATION("HelloWorld",
                     "Ananta",
                     "06/16/15",
                     "HelloWorld Program.",

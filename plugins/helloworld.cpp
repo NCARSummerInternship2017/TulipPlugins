@@ -40,7 +40,7 @@ using namespace tlp;
 using namespace std;
 
 /*PLUGIN(ImportInfinibandRoutes)*/
-PLUGIN(helloworld)
+PLUGIN(HelloWorld)
 /**
 static const char * paramHelp[] = {
    // File to Open

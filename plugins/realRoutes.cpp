@@ -1,9 +1,29 @@
+/**
+ *
+ * This file is part of Tulip (www.tulip-software.org)
+ *
+ * Authors: David Auber and the Tulip development Team
+ * from LaBRI, University of Bordeaux, University Corporation 
+ * for Atmospheric Research
+ *
+ * Tulip is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * Tulip is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ *
+ **/
 
 #include<fstream>
 #include <algorithm>
 #include <string>
 #include <set>
-#include "realRoutes.h"
+#include "RouteAnalysis_All.h"
 
 #include <tulip/GlScene.h>
 #include <tulip/BooleanProperty.h>
@@ -19,35 +39,38 @@
 using namespace std;
 using namespace tlp;
 
-PLUGIN(realRoutes)
+PLUGIN(RouteAnalysis_All)
 
 static const char * paramHelp[] = {
-   // File to Open
-   HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname")*/ \
+  
+  // File to Open
+  HTML_HELP_OPEN() \
+  HTML_HELP_DEF( "type", "pathname" ) \
   HTML_HELP_BODY() \
-  "Hello World" \
+  "Path to ibdiagnet2.fdbs file to import" \
   HTML_HELP_CLOSE()
+    
 };
 
-realRoutes::realRoutes(tlp::PluginContext* context)
+RouteAnalysis_All::RouteAnalysis_All(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-    //addInParameter<std::string>("file::filename", paramHelp[0],"");
-
+    addInParameter<std::string>("file::filename", paramHelp[0],"");
 }
 
 
 namespace ib = infiniband;
 namespace ibp = infiniband::parser;
 
-unsigned int realRoutes::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph * const graph,
-                        std::vector<ib::entity_t *> tmp, const ib::entity_t * real_target,
-                        ib::lid_t target_lid,StringProperty *getGuid)
+unsigned int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph * const graph,
+                                           std::vector<ib::entity_t *> &tmp, const ib::entity_t * real_target,
+                                           ib::lid_t target_lid,StringProperty *getGuid)
 {
+    //count the hops
     unsigned int count = 0;
     while(tmp.back()->guid!= real_target->guid) {
         const ib::entity_t & temp = *tmp.back();
+        bool flag = false;
         for (
                 ib::entity_t::routes_t::const_iterator
                         ritr = temp.get_routes().begin(),
@@ -68,6 +91,9 @@ unsigned int realRoutes::help_count(ib::tulip_fabric_t * const fabric, tlp::Grap
                             if(it->second.id == graph->target(edge).id){
                                 const ib::entity_t * myEntity = it->first;
                                 tmp.push_back(const_cast<ib::entity_t *> (myEntity));
+                               
+                                //test
+                                cout<<"next step node id: "<<it->second.id<<" ";
                                 count++;
                              }
                         }
@@ -75,14 +101,19 @@ unsigned int realRoutes::help_count(ib::tulip_fabric_t * const fabric, tlp::Grap
                     }
                 }
             }
+          
+          flag = true;
+        }
+        
+        if(!flag){
+          return -1;
         }
     }
-
     return count;
 }
 
 
-unsigned int realRoutes::count_hops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph){
+unsigned int RouteAnalysis_All::count_hops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph){
     //Get the fabric from the graph
     ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
 
@@ -110,9 +141,28 @@ unsigned int realRoutes::count_hops(const ib::entity_t * source_entity, const ib
         ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
         if(graph->source(Myedge->second).id == source_node.id){
             const tlp::edge &e = Myedge->second;
-            tmp.push_back(const_cast<ib::entity_t *> ( & entities_map.find(std::stol(getGuid->getNodeStringValue(graph->target(e)).c_str(),NULL,0))->second));
+            //tmp.push_back(const_cast<ib::entity_t *> ( & entities_map.find(std::stol(getGuid->getNodeStringValue(graph->target(e)).c_str(),NULL,0))->second));
+            for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
+                if(it->second.id == graph->target(e).id){
+                    const ib::entity_t * real_source = it->first;
+                    tmp.push_back(const_cast<ib::entity_t *> (real_source));
+                  
+                    //test
+                    cout<<"Source --- "<<it->second.id<<" "; 
+                 }
+            }
         }else{
-            tmp.push_back(const_cast<ib::entity_t *> (source_entity));
+            try
+            {
+                tmp.push_back(const_cast<ib::entity_t *> (source_entity));
+             }
+            catch(std::exception& e)
+            {
+                std::cout << e.what() << std::endl;
+             }
+            
+            //test
+            cout<<"Source --- "<<source_node.id<<" ";
         }
         count++;
     }
@@ -128,13 +178,13 @@ unsigned int realRoutes::count_hops(const ib::entity_t * source_entity, const ib
             const tlp::edge &e = Myedge->second;
           
             //test
-            cout<<"edge id: "<<e.id<<endl;
+            //cout<<"edge id: "<<e.id<<endl;
             for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
                 if(it->second.id == graph->target(e).id){
                     const ib::entity_t * real_target = it->first;
                     
                     //test
-                    cout<<"Node id: "<< graph->target(e).id<<" guid: "<<real_target->guid<<endl;
+                    //cout<<"Node id: "<< graph->target(e).id<<" guid: "<<real_target->guid<<endl;
                     count += help_count(fabric, graph, tmp, real_target, target_lid, getGuid);
                  }
             }
@@ -147,13 +197,13 @@ unsigned int realRoutes::count_hops(const ib::entity_t * source_entity, const ib
             const tlp::edge &e = Myedge->second;
           
             //test
-            cout<<"edge id: "<<e.id<<endl;
+            //cout<<"edge id: "<<e.id<<endl;
             for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
                 if(it->second.id == graph->source(e).id){
                     const ib::entity_t * real_target = it->first;
                   
                     //test
-                    cout<<"Node id: "<< graph->source(e).id<<" guid: "<<real_target->guid<<endl;
+                    //cout<<"Node id: "<< graph->source(e).id<<" guid: "<<real_target->guid<<endl;
                     count += help_count(fabric, graph, tmp, real_target, target_lid, getGuid);
                  }
             }
@@ -161,6 +211,7 @@ unsigned int realRoutes::count_hops(const ib::entity_t * source_entity, const ib
             count++;
       }
     else{
+        cout<<"test"<<endl;
         count += help_count(fabric, graph, tmp, target_entity, target_lid, getGuid);
 
     }
@@ -168,7 +219,7 @@ unsigned int realRoutes::count_hops(const ib::entity_t * source_entity, const ib
 }
 
 
-bool realRoutes::run(){
+bool RouteAnalysis_All::run(){
     assert(graph);
 
     static const size_t STEPS = 6;
@@ -203,7 +254,17 @@ bool realRoutes::run(){
     /**
      * Open file to read and import per type
      */
-   
+    std::string filename;
+
+    dataSet->get("file::filename", filename);
+    std::ifstream ifs(filename.c_str());
+    if(!ifs)
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable open source file.");
+
+        return false;
+    }
 
     if(pluginProgress)
     {
@@ -212,7 +273,13 @@ bool realRoutes::run(){
     }
 
     ibp::ibdiagnet_fwd_db parser;
-    
+    if(!parser.parse(*fabric, ifs))
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable parse routes file.");
+
+        return false;
+    }
 
     if(pluginProgress)
     {
@@ -220,7 +287,7 @@ bool realRoutes::run(){
         pluginProgress->progress(3, STEPS);
     }
 
-    
+    ifs.close();
 
 
     if (pluginProgress) {
@@ -255,13 +322,22 @@ bool realRoutes::run(){
                     for(ib::tulip_fabric_t::entity_nodes_t::iterator it2 = fabric->entity_nodes.begin(); it2 != fabric->entity_nodes.end(); ++it2){
                         if(it2->second.id == node.id){
                             const ib::entity_t * target_entity = it2->first;
-                            const unsigned int &temp = count_hops(source_entity,target_entity,graph);
+  
                           
                             //test
-                            cout<<mySource.id<<" to "<< node.id<<" : "<<temp<<" guid: "<<target_entity->guid<<endl;
+                            cout<<"-------------------------------"<<endl;
+                            cout<<"main test"<<mySource.id<<" to "<< node.id<<" target_guid: "<<target_entity->guid<<endl;
+                            cout<<"---------detail---------"<<endl;
+                            
+                            
+                            const unsigned int &temp = count_hops(source_entity,target_entity,graph);
+                            cout<<"main test"<<mySource.id<<" to "<< node.id<<" : "<<temp<<endl;
                             ibRealHop->setNodeValue(node, temp);
+                            
+                            
+       
                         }
-                    }
+                    } 
                 }
             }
         }

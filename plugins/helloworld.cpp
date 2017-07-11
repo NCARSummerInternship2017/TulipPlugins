@@ -114,7 +114,7 @@ bool HelloWorld::run()
     int num_nodes = 0;
     int num_edges = 0;
 
-    while(itnod->hasNext()){
+    while(itnodes->hasNext()){
       
         num_nodes++;
     }

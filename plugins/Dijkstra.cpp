@@ -41,15 +41,16 @@ using namespace std;
 
 /*PLUGIN(ImportInfinibandRoutes)*/
 PLUGIN(InfinibandAnalysis)
-
+/**
 static const char * paramHelp[] = {
    // File to Open
    HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname")*/ \
+  HTML_HELP_DEF( "type", "pathname") \
   HTML_HELP_BODY() \
   "Hello World" \
   HTML_HELP_CLOSE()
 };
+**/
 
 InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
         : tlp::Algorithm(context)
@@ -208,7 +209,7 @@ bool InfinibandAnalysis::run()
     map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
-    int avg = 1;
+    //int avg = 1;
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
         max = std::max(max,mymap[i]->getDist());
@@ -219,7 +220,7 @@ bool InfinibandAnalysis::run()
     cout<<""<<endl;
     std::vector<unsigned int> mypath;
    
-    avg = (1+max)/2;
+    int avg = (1+max)/2;
 
     tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
     assert(ibHop);

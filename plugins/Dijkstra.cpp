@@ -220,7 +220,7 @@ bool InfinibandAnalysis::run()
     cout<<""<<endl;
     std::vector<unsigned int> mypath;
    
-    int avg = (1+max)/2;
+    
 
     tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
     assert(ibHop);

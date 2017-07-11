@@ -44,27 +44,9 @@ static const char * paramHelp[] = {
 HelloWorld::HelloWorld(tlp::PluginContext* context)
   : tlp::Algorithm(context)
 {
-  addInParameter<std::string>("file::filename", paramHelp[0],"");
+  //addInParameter<std::string>("file::filename", paramHelp[0],"");
     
 }
-
-namespace ib = infiniband;
-namespace ibp = infiniband::parser;
-
-//Implementing min_distance
-int HelloWorld::min_distance(int dist[], bool visited[], int v){
-  int min = INT_MAX;
-    int min_index = 0;
-
-    for(int i = 0; i<v; i++){
-        if(!visited[i] && dist[i] < min)
-            min = dist[i], min_index = i;
-    }
-
-    return min_index;
-}
-
-
 
 
 
@@ -86,35 +68,16 @@ bool HelloWorld::run()
    * for an existing fabric
    */
 
-  ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-  if(!fabric)
-  {
-    if(pluginProgress)
-      pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
-
-    return false;
-  }
-
   if(pluginProgress)
   {
-    pluginProgress->setComment("Found Fabric");
+    pluginProgress->setComment("Counting the nodes");
     pluginProgress->progress(1, STEPS);
   }
 
   /**
    * Open file to read and import per type
    */
-  std::string filename;
-  
-  dataSet->get("file::filename", filename);
-  std::ifstream ifs(filename.c_str());
-  if(!ifs)
-  {
-    if(pluginProgress)
-      pluginProgress->setError("Unable open source file.");
-
-    return false;
-  }
+ 
 
   if(pluginProgress)
   {
@@ -122,13 +85,7 @@ bool HelloWorld::run()
     pluginProgress->setComment("Parsing Routes.");
   }
   
-  ibp::ibdiagnet_fwd_db parser;
-  /*if(!parser.parse(*fabric, ifs))
-  {
-    if(pluginProgress)
-      pluginProgress->setError("Unable parse routes file.");
-    return false;
-  }*/
+  
 
   if(pluginProgress)
   {
@@ -136,14 +93,13 @@ bool HelloWorld::run()
     pluginProgress->progress(3, STEPS);
   }
 
-  ifs.close();
+  
       
   /**
    * calculate routes outbound
    * from every port on the fabric
    */
-  tlp::IntegerProperty * ibRoutesOutbound = graph->getProperty<tlp::IntegerProperty >("ibRoutesOutbound");
-  assert(ibRoutesOutbound);
+  
 
   if(pluginProgress)
   {
@@ -151,118 +107,34 @@ bool HelloWorld::run()
     pluginProgress->progress(4, STEPS);
   }
 
-  /*for(
-    ib::fabric_t::entities_t::const_iterator
-    itr = fabric->get_entities().begin(),
-    eitr = fabric->get_entities().end();
-    itr != eitr;
-    ++itr
-  )
-  {
-    const ib::entity_t &entity = itr->second;
-    for(
-      ib::entity_t::routes_t::const_iterator
-      ritr =  entity.get_routes().begin(),
-      reitr = entity.get_routes().end();
-      ritr != reitr;
-      ++ritr
-    )
-    {
-      const ib::entity_t::routes_t::mapped_type set = ritr->second;
-      const ib::entity_t::portmap_t::const_iterator port_itr = entity.ports.find(ritr->first);
-      if(port_itr != entity.ports.end())
-      {
-        const ib::port_t* const port = port_itr->second;
-        const ib::tulip_fabric_t::port_edges_t::const_iterator edge_itr = fabric->port_edges.find(const_cast<ib::port_t*>(port));
-        if(edge_itr != fabric->port_edges.end())
-        {
-          const tlp::edge &edge = edge_itr->second;
-        
-          ibRoutesOutbound->setEdgeValue(edge, ritr->second.size());
-        }
-      }
-    }
-  }*/
-  tlp::Iterator<node> *itnod = graph->getNodes();
-  int v = 0; 
+  
+  tlp::Iterator<node> *itnod = graph->getNodes(); //Nodes Iterator
+  tlp:Iterator<edge> *itedge = graph->getEdges(); //Edges Iterator
+  int n_nodes = 0;
+  int n_edges = 0;
   
   
   while( itnod->hasNext()){
-    node n = itnod->next();
-    v++;
-  }
-  
-  //initialize matrix
-  int **adjacent_matrix;
-  adjacent_matrix = new int* [v];
-  for(int i = 0; i<v; i++){
-    adjacent_matrix[i] = new int[v];
-  }
-  
-  for(int i = 0; i<v; i++){
-    for(int j = 0; j<v; j++){
-      adjacent_matrix[i][j] = 0;
-    }
-  }
-  tlp::Iterator<edge> *ite = graph->getEdges();
-  while(ite->hasNext()){
-    edge e = ite->next();
-    int s = graph->source(e).id, t = graph->target(e).id;
-    if(!adjacent_matrix[s][t]){
-      adjacent_matrix[s][t]=1;
-      adjacent_matrix[t][s]=1;
-    }
-  }
-  
-  //djistra implementation 
-  int dist[v];
-  bool visited[v];
-  for(int i =0;i<v;i++){
-    dist[i] = INT_MAX, visited[i]=false;
-  }
-  
-  dist[0]=0;
-  
-  for(int count=0;count<v-1;count++){
-    int u = HelloWorld::min_distance(dist,visited,v);
-    visited[u] = true;
     
-    for (int i =0;i<v;i++){
-      if (!visited[i] && adjacent_matrix[u][i] && dist[u] != INT_MAX && (dist[u] + adjacent_matrix[u][i]) < dist[i])
-        dist[i] = dist[u] + adjacent_matrix[u][i];
-    }
+    n_nodes++;
   }
   
-  int min = 1;
-  int max = 1;
-  int avg = 1;
-  //Print Distance and find out the max and min numbers
-  for(int i = 0; i<v; i++){
-    std::max(max,dist[i]);
-    cout<<i<<": "<<dist[i]<<endl;
+  while (itedge->hasNext()){
+    n_edges++;
   }
-  avg = (min+max)/2;
   
-  tlp::IntegerProperty * ibHub = graph->getProperty<tlp::IntegerProperty>("ibHub");
-  assert(ibHub);
+  cout << "Hello World!";
+  cout << "There are " <<n_nodes<< " and" << n_edges << " edges in this graph";
+  
+  
+  
   if(pluginProgress)
   {
     pluginProgress->setComment("Show the max min average steps");
     pluginProgress->progress(5, STEPS);
   }
   
-  tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
-  while(itnodes->hasNext()){
-        const tlp::node &node = itnodes->next();
-        const int &temp = dist[node.id];
-        //if(dist[node.id]==max)
-        //  ibHub->setNodeValue(node, 216);
-        //else if(dist[node.id]==1)
-        //  ibHub->setNodeValue(node, -216);
-        //else if(dist[node.id]==avg)
-        //  ibHub->setNodeValue(node, 0);
-        ibHub->setNodeValue(node, temp);
-  }
+  
 
   if(pluginProgress)
   {

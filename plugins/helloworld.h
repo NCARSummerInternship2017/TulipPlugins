@@ -22,14 +22,13 @@
 
 #include <tulip/TulipPluginHeaders.h>
 
-#ifndef IB_ROUTES_H
-#define IB_ROUTES_H
+
   
 class HelloWorld: public tlp::Algorithm {
 
   
 public:
-  PLUGININFORMATION("HelloWorld",
+  PLUGININFORMATION("helloworld",
                     "Ananta",
                     "06/16/15",
                     "HelloWorld Program.",
@@ -43,7 +42,7 @@ public:
    * @warning currently only works if static data is retained from import
    */
   
-  int min_distance(int dist[], bool visited[],int v);
+  
   bool run();
 };
 

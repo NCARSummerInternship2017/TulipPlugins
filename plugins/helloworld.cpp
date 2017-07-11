@@ -40,7 +40,7 @@ using namespace tlp;
 using namespace std;
 
 /*PLUGIN(ImportInfinibandRoutes)*/
-PLUGIN(InfinibandAnalysis)
+PLUGIN(helloworld)
 /**
 static const char * paramHelp[] = {
    // File to Open
@@ -52,7 +52,7 @@ static const char * paramHelp[] = {
 };
 **/
 
-InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
+HelloWorld::HelloWorld(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
     //addInParameter<std::string>("file::filename", paramHelp[0],"");
@@ -66,7 +66,7 @@ InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
 
 
 
-bool InfinibandAnalysis::run()
+bool HelloWorld::run()
 {
     assert(graph);
 

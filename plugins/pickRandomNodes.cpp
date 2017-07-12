@@ -138,10 +138,10 @@ bool randomNodes::run()
         
        //To select to random nodes
     
-    BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
+    BooleanProperty *pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
     cout<<"Yes";
 
-    tlp:Iterator<node> *itnodes = graph->getNodes();
+    Iterator<node> *itnodes = graph->getNodes();
     cout<<"Yes";
 
     unsigned int v = 0; //Number of nodes
@@ -164,8 +164,9 @@ bool randomNodes::run()
 
     unsigned int maxID = max(randSource,randDestination);
     cout<<"Yes";
-    while(itnodes->hasNext()){
-        const node &mynode = itnodes->next();
+    Iterator<node> *itnode = graph->getNodes();
+    while(itnode->hasNext()){
+        const tlp::node &mynode = itnodes->next();
         if (mynode.id == randSource){
             pick->setNodeValue(mynode,true);
         }
@@ -182,29 +183,6 @@ bool randomNodes::run()
 
 
    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
     if(pluginProgress)
     {
         pluginProgress->setComment("Implementation of Dijkstra's Algorithm complete...");

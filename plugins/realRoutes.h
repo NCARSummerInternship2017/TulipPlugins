@@ -15,7 +15,7 @@
 namespace ib = infiniband;
 
 class RouteAnalysis_All: public tlp::Algorithm{
-    PLUGININFORMATION("Real Rohte",
+    PLUGININFORMATION("Real Routes",
                       "zz",
                       "06/27/2017",
                       "print out the real routing path",

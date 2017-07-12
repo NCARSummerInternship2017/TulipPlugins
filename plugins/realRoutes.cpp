@@ -42,14 +42,12 @@ using namespace tlp;
 PLUGIN(RouteAnalysis_All)
 
 static const char * paramHelp[] = {
-  
   // File to Open
   HTML_HELP_OPEN() \
   /*HTML_HELP_DEF( "type", "pathname" ) \*/
   HTML_HELP_BODY() \
   "Path to ibdiagnet2.fdbs file to import" \
   HTML_HELP_CLOSE()
-    
 };
 
 RouteAnalysis_All::RouteAnalysis_All(tlp::PluginContext* context)
@@ -62,15 +60,24 @@ RouteAnalysis_All::RouteAnalysis_All(tlp::PluginContext* context)
 namespace ib = infiniband;
 namespace ibp = infiniband::parser;
 
-unsigned int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph * const graph,
-                                           std::vector<ib::entity_t *> &tmp, const ib::entity_t * real_target,
-                                           ib::lid_t target_lid,StringProperty *getGuid)
+const ib::entity_t * RouteAnalysis_All::getMyEntity(const tlp::node node,ib::tulip_fabric_t * const fabric){
+    for(ib::tulip_fabric_t::entity_nodes_t::iterator it1 = fabric->entity_nodes.begin(); it1 != fabric->entity_nodes.end(); ++it1)
+        if(it1->second.id == node.id)
+            return it1->first;
+
+    return nullptr;
+}
+
+int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph * const graph,
+                        std::vector<ib::entity_t *> &tmp, const ib::entity_t * real_target)
 {
-    //count the hops
-    unsigned int count = 0;
+    int count = 0;
+    bool find_next = false;
+    ib::lid_t target_lid = real_target->lid();
+  
     while(tmp.back()->guid!= real_target->guid) {
         const ib::entity_t & temp = *tmp.back();
-        bool flag = false;
+      
         for (
                 ib::entity_t::routes_t::const_iterator
                         ritr = temp.get_routes().begin(),
@@ -87,52 +94,45 @@ unsigned int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tl
                             const_cast<ib::port_t *>(port));
                     if (edge_itr != fabric->port_edges.end()) {
                         const tlp::edge &edge = edge_itr->second;
-                        for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
-                            if(it->second.id == graph->target(edge).id){
-                                const ib::entity_t * myEntity = it->first;
-                                tmp.push_back(const_cast<ib::entity_t *> (myEntity));
-                               
-                                //test
-                                cout<<"next step node id: "<<it->second.id<<" ";
-                                count++;
-                             }
-                        }
-                        //const ib::entity_t &node = entities_map.find(std::stol((getGuid->getNodeStringValue(graph->target(edge))).c_str(), NULL, 0))->second;
+                        const ib::entity_t * entity = getMyEntity(graph->target(edge),fabric);
+                        tmp.push_back(const_cast<ib::entity_t *> (entity));
+                        count++;
+                        find_next = true;
                     }
                 }
             }
-          
-          flag = true;
         }
-        
-        if(!flag){
-          return -1;
-        }
+      
+        if(!find_next)
+        return -1;
     }
+
+
     return count;
 }
 
 
-unsigned int RouteAnalysis_All::count_hops(const ib::entity_t * source_entity, const ib::entity_t * target_entity,tlp::Graph * const graph){
+int RouteAnalysis_All::count_hops(const tlp::node source_node, const tlp::node target_node,tlp::Graph * const graph){
     //Get the fabric from the graph
     ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
 
     //Set the tulip Properties
     IntegerProperty *getPortNum = graph->getLocalProperty<IntegerProperty>("ibPortNum");
-    StringProperty *getGuid = graph->getLocalProperty<StringProperty>("ibGuid");
 
     //Get the entities' map <guid, entity_t> = entities_t
-    const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
-    ib::tulip_fabric_t::entity_nodes_t::iterator source = fabric->entity_nodes.find(const_cast<ib::entity_t *>(source_entity));
-    const tlp::node source_node = source->second;
+    //const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
 
-    ib::tulip_fabric_t::entity_nodes_t::iterator target = fabric->entity_nodes.find(const_cast<ib::entity_t *>(target_entity));
-    const tlp::node target_node = target->second;
-
-    ib::lid_t target_lid = target_entity->lid();
+    const ib::entity_t * source_entity = getMyEntity(source_node,fabric);
+    const ib::entity_t * target_entity = getMyEntity(target_node,fabric);
+    
+    cout<<"Test source_entity guid: "<<source_entity->guid<<endl;
+    cout<<"Test target_entity guid: "<<target_entity->guid<<endl;
+    cout<<"----------Test the source & target entities end------------"<<endl;
+    
+    //ib::lid_t target_lid = target_entity->lid();
     std::vector<ib::entity_t *> tmp;
 
-    unsigned int count = 0;
+    int count = 0;
     if(getPortNum->getNodeValue(source_node)==1){
         //find the only port in HCA
         const ib::entity_t::portmap_t::const_iterator Myport = source_entity->ports.begin();
@@ -141,30 +141,14 @@ unsigned int RouteAnalysis_All::count_hops(const ib::entity_t * source_entity, c
         ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
         if(graph->source(Myedge->second).id == source_node.id){
             const tlp::edge &e = Myedge->second;
-            //tmp.push_back(const_cast<ib::entity_t *> ( & entities_map.find(std::stol(getGuid->getNodeStringValue(graph->target(e)).c_str(),NULL,0))->second));
-            for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
-                if(it->second.id == graph->target(e).id){
-                    const ib::entity_t * real_source = it->first;
-                    tmp.push_back(const_cast<ib::entity_t *> (real_source));
-                  
-                    //test
-                    cout<<"Source --- "<<it->second.id<<" "; 
-                 }
-            }
+            tmp.push_back(const_cast<ib::entity_t *> (getMyEntity(graph->target(e),fabric)));
         }else{
-            try
-            {
-                tmp.push_back(const_cast<ib::entity_t *> (source_entity));
-             }
-            catch(std::exception& e)
-            {
-                std::cout << e.what() << std::endl;
-             }
-            
-            //test
-            cout<<"Source --- "<<source_node.id<<" ";
+            const tlp::edge &e = Myedge->second;
+            tmp.push_back(const_cast<ib::entity_t *> (getMyEntity(graph->source(e),fabric)));
         }
         count++;
+    }else{
+        tmp.push_back(const_cast<ib::entity_t *> (source_entity));
     }
 
     //Whether the target is HCE or not
@@ -176,18 +160,15 @@ unsigned int RouteAnalysis_All::count_hops(const ib::entity_t * source_entity, c
         ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
         if(graph->source(Myedge->second).id == source_node.id){
             const tlp::edge &e = Myedge->second;
-          
-            //test
-            //cout<<"edge id: "<<e.id<<endl;
-            for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
-                if(it->second.id == graph->target(e).id){
-                    const ib::entity_t * real_target = it->first;
+            const ib::entity_t * real_target = getMyEntity(graph->target(e),fabric);
                     
-                    //test
-                    //cout<<"Node id: "<< graph->target(e).id<<" guid: "<<real_target->guid<<endl;
-                    count += help_count(fabric, graph, tmp, real_target, target_lid, getGuid);
-                 }
-            }
+            int count_temp = help_count(fabric, graph, tmp, real_target);
+            if(count_temp == -1)
+              return -1;
+            else
+              count += count_temp;
+
+
         }else {
             //find the only port in HCA
             const ib::entity_t::portmap_t::const_iterator Myport = target_entity->ports.begin();
@@ -195,24 +176,21 @@ unsigned int RouteAnalysis_All::count_hops(const ib::entity_t * source_entity, c
             //use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the edge
             ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
             const tlp::edge &e = Myedge->second;
-          
-            //test
-            //cout<<"edge id: "<<e.id<<endl;
-            for(ib::tulip_fabric_t::entity_nodes_t::iterator it = fabric->entity_nodes.begin(); it != fabric->entity_nodes.end(); ++it){
-                if(it->second.id == graph->source(e).id){
-                    const ib::entity_t * real_target = it->first;
-                  
-                    //test
-                    //cout<<"Node id: "<< graph->source(e).id<<" guid: "<<real_target->guid<<endl;
-                    count += help_count(fabric, graph, tmp, real_target, target_lid, getGuid);
-                 }
-            }
-         }
+            const ib::entity_t * real_target = getMyEntity(graph->source(e),fabric);
+            int count_temp = help_count(fabric, graph, tmp, real_target);
+            if(count_temp == -1)
+              return -1;
+            else
+              count += count_temp;
+        }
             count++;
-      }
+    }
     else{
-        cout<<"test"<<endl;
-        count += help_count(fabric, graph, tmp, target_entity, target_lid, getGuid);
+        int count_temp = help_count(fabric, graph, tmp, target_entity);
+        if(count_temp == -1)
+          return -1;
+        else
+          count += count_temp;
 
     }
     return count;
@@ -222,7 +200,7 @@ unsigned int RouteAnalysis_All::count_hops(const ib::entity_t * source_entity, c
 bool RouteAnalysis_All::run(){
     assert(graph);
 
-    static const size_t STEPS = 6;
+    static const size_t STEPS = 5;
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
@@ -237,7 +215,13 @@ bool RouteAnalysis_All::run(){
      */
 
     ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-    
+    if(!fabric)
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
+
+        return false;
+    }
 
     if(pluginProgress)
     {
@@ -249,77 +233,48 @@ bool RouteAnalysis_All::run(){
      * Open file to read and import per type
      */
     
+
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Finding the ports..");
+        pluginProgress->setComment("Parsing Routes.");
     }
 
     ibp::ibdiagnet_fwd_db parser;
     
 
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Finding the LID..");
-        pluginProgress->progress(3, STEPS);
-    }
-
-    
-
 
     if (pluginProgress) {
-        pluginProgress->setComment("Found source and target entity..");
+        pluginProgress->setComment("Found path source and target entities..");
         pluginProgress->progress(4, STEPS);
     }
 
     BooleanProperty *selectSource = graph->getLocalProperty<BooleanProperty>("viewSelection");
-    StringProperty *getGuid = graph->getLocalProperty<StringProperty>("ibGuid");
-
     tlp::IntegerProperty * ibRealHop = graph->getProperty<tlp::IntegerProperty>("ibRealHop");
     assert(ibRealHop);
 
-    const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
+    //const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
     tlp::Iterator<tlp::node> *other = graph->getNodes();
 
     tlp::Iterator<tlp::node> *selections = selectSource->getNodesEqualTo(true,NULL);
     const tlp::node mySource = selections->next();
-  
-    for(ib::tulip_fabric_t::entity_nodes_t::iterator it1 = fabric->entity_nodes.begin(); it1 != fabric->entity_nodes.end(); ++it1){
-        if(it1->second.id == mySource.id){
-            cout<<mySource.id<<endl;
-            const ib::entity_t * source_entity = it1->first;
-            while(other->hasNext()){
-                const tlp::node &node = other->next();
-                if(node.id == mySource.id){
-                    ibRealHop->setNodeValue(node, 0);
-                    continue;
-                }
-                else
-                {
-                    for(ib::tulip_fabric_t::entity_nodes_t::iterator it2 = fabric->entity_nodes.begin(); it2 != fabric->entity_nodes.end(); ++it2){
-                        if(it2->second.id == node.id){
-                            const ib::entity_t * target_entity = it2->first;
-  
-                          
-                            //test
-                            cout<<"-------------------------------"<<endl;
-                            cout<<"main test"<<mySource.id<<" to "<< node.id<<" target_guid: "<<target_entity->guid<<endl;
-                            cout<<"---------detail---------"<<endl;
-                            
-                            
-                            const unsigned int &temp = count_hops(source_entity,target_entity,graph);
-                            cout<<"main test"<<mySource.id<<" to "<< node.id<<" : "<<temp<<endl;
-                            ibRealHop->setNodeValue(node, temp);
-                            
-                            
-       
-                        }
-                    } 
-                }
-            }
+
+    cout<<"My Source ID: "<<mySource.id<<endl;
+    cout<<"-------------------mySource test end-----------------------"<<endl;
+
+    const ib::entity_t * source_entity= getMyEntity(mySource,fabric);
+    while(other->hasNext()){
+        const tlp::node &node = other->next();
+        if(node.id == mySource.id){
+            ibRealHop->setNodeValue(node, 0);
+            continue;
+        }
+        else
+        {
+            const int &temp = count_hops(mySource,node,graph);
+            ibRealHop->setNodeValue(node, temp);
         }
     }
-
 
 
     if(pluginProgress)

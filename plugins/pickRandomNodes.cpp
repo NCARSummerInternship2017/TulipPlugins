@@ -67,74 +67,12 @@ bool randomNodes::run()
 {
     assert(graph);
 
-    static const size_t STEPS = 5;
-    if(pluginProgress)
-    {
-        pluginProgress->showPreview(false);
-        pluginProgress->setComment("Starting to Import Routes");
-        pluginProgress->progress(0, STEPS);
-    }
+   
 
-    /**
-     * while this does not import
-     * nodes/edges, it imports properties
-     * for an existing fabric
-     */
-
-    ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-    if(!fabric)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
-
-        return false;
-    }
-
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Found Fabric");
-        pluginProgress->progress(1, STEPS);
-    }
-
-    /**
-     * Open file to read and import per type
-     */
-    std::string filename;
-
-    dataSet->get("file::filename", filename);
-    std::ifstream ifs(filename.c_str());
-    if(!ifs)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable open source file.");
-
-        return false;
-    }
-
-    if(pluginProgress)
-    {
-        pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Parsing Routes.");
-    }
-
-    ibp::ibdiagnet_fwd_db parser;
-    
-
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Parsing Routes complete.");
-        pluginProgress->progress(3, STEPS);
-    }
-
-    ifs.close();
+ 
 
     
 
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Calculating Route oversubscription.");
-        pluginProgress->progress(4, STEPS);
-    }
         
        //To select to random nodes
     
@@ -182,13 +120,7 @@ bool randomNodes::run()
     cout<<"YES";
 
 
-   
-    if(pluginProgress)
-    {
-        pluginProgress->setComment("Implementation of Dijkstra's Algorithm complete...");
-        pluginProgress->progress(STEPS, STEPS);
-    }
-
+  
     return true;
 }
 

@@ -28,6 +28,7 @@
 #include "ibautils/ib_fabric.h"
 #include "ibautils/ib_parser.h"
 #include "ibautils/regex.h"
+#include <stdlib.h> 
 
 #include <tulip/BooleanProperty.h>
 
@@ -174,8 +175,9 @@ bool randomNodes::run()
         }
       }
     }*/
+        
     tlp::Iterator<node> *itnod = graph->getNodes();
-    int v = 0;
+    unsigned int v = 0;
 
 
     while( itnod->hasNext()){
@@ -184,13 +186,41 @@ bool randomNodes::run()
         cout << n.id<<"\n";
         
     }
-    cout << "Hello World";
+    cout << "There are " << v << " nodes in this graph";
+        
+    BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
+
+    tlp:Iterator<node> *itnodes = graph->getNodes();
+
     
 
+    unsigned int randSource = 0;
+    unsigned int randDestination = 0;
+    while (true){
+        randSource = rand()%v;
+        randDestination = (rand()%v);
+        if ((randSource<v) && (randDestination!=randSource) && (randDestination<v)){
+            break;
+        }
+    }
 
+    unsigned int maxID = max(randSource,randDestination);
 
+    while(itnodes->hasNext()){
+        const node &mynode = itnodes->next();
+        if (mynode.id == randSource){
+            pick->setNodeValue(mynode,true);
+        }
 
+        if(mynode.id == randDestination){
+            pick->setNodeValue(mynode,true);
+        }
 
+        if (mynode.id > maxID){
+            break;
+        }
+    }
+        
 
     if(pluginProgress)
     {

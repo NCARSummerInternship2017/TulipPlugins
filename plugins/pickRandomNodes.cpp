@@ -33,7 +33,7 @@
 using namespace tlp;
 using namespace std;
 
-PLUGIN(ImportInfinibandRoutes)
+PLUGIN(pickRandomNodes)
 
 static const char * paramHelp[] = {
         // File to Open
@@ -98,14 +98,14 @@ bool randomNodes::run()
 
     tlp:Iterator<node> *itnodes = graph->getNodes();
 
-    int v = 0; //Number of nodes
+    unsigned int v = 0; //Number of nodes
 
     while(itnodes->hasNext()){
         v++;
     }
 
-    int randSource = 0;
-    int randDestination = 0;
+    unsigned int randSource = 0;
+    unsigned int randDestination = 0;
     while (true){
         randSource = (rand()%v);
         randDestination = (rand()%v);
@@ -114,7 +114,7 @@ bool randomNodes::run()
         }
     }
 
-    int maxID = max(randSource,randDestination);
+    unsigned int maxID = max(randSource,randDestination);
 
     while(itnodes->hasNext()){
         const node &mynode = itnodes->next();

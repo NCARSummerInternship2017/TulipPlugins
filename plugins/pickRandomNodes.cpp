@@ -51,7 +51,7 @@ static const char * paramHelp[] = {
 randomNodes::randomNodes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-    addInParameter<std::string>("file::filename", paramHelp[0],"");
+    //addInParameter<std::string>("file::filename", paramHelp[0],"");
 
 }
 
@@ -73,11 +73,7 @@ bool randomNodes::run()
         pluginProgress->progress(0, STEPS);
     }
 
-    /**
-     * while this does not import
-     * nodes/edges, it imports properties
-     * for an existing fabric
-     */
+    
 
     ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
     if(!fabric)
@@ -94,87 +90,34 @@ bool randomNodes::run()
         pluginProgress->progress(1, STEPS);
     }
 
-    /**
-     * Open file to read and import per type
-     */
-    std::string filename;
-
-    dataSet->get("file::filename", filename);
-    std::ifstream ifs(filename.c_str());
-    if(!ifs)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable open source file.");
-
-        return false;
-    }
+    
+    
 
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Parsing Routes.");
+        pluginProgress->setComment("Generating random nodes..");
     }
 
-    ibp::ibdiagnet_fwd_db parser;
-    /*if(!parser.parse(*fabric, ifs))
-    {
-      if(pluginProgress)
-        pluginProgress->setError("Unable parse routes file.");
-      return false;
-    }*/
+    
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Parsing Routes complete.");
+        pluginProgress->setComment("Creating a suitable range for random nodes..");
         pluginProgress->progress(3, STEPS);
     }
 
-    ifs.close();
+    
 
-    /**
-     * calculate routes outbound
-     * from every port on the fabric
-     */
-    /*tlp::IntegerProperty * ibHops = graph->getProperty<tlp::IntegerProperty >("ibHops");
-    assert(ibHops);*/
+    
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Calculating Route oversubscription.");
+        pluginProgress->setComment("Waiting..");
         pluginProgress->progress(4, STEPS);
     }
 
-    /*for(
-      ib::fabric_t::entities_t::const_iterator
-      itr = fabric->get_entities().begin(),
-      eitr = fabric->get_entities().end();
-      itr != eitr;
-      ++itr
-    )
-    {
-      const ib::entity_t &entity = itr->second;
-      for(
-        ib::entity_t::routes_t::const_iterator
-        ritr =  entity.get_routes().begin(),
-        reitr = entity.get_routes().end();
-        ritr != reitr;
-        ++ritr
-      )
-      {
-        const ib::entity_t::routes_t::mapped_type set = ritr->second;
-        const ib::entity_t::portmap_t::const_iterator port_itr = entity.ports.find(ritr->first);
-        if(port_itr != entity.ports.end())
-        {
-          const ib::port_t* const port = port_itr->second;
-          const ib::tulip_fabric_t::port_edges_t::const_iterator edge_itr = fabric->port_edges.find(const_cast<ib::port_t*>(port));
-          if(edge_itr != fabric->port_edges.end())
-          {
-            const tlp::edge &edge = edge_itr->second;
-            ibRoutesOutbound->setEdgeValue(edge, ritr->second.size());
-          }
-        }
-      }
-    }*/
+
         
     tlp::Iterator<node> *itnod = graph->getNodes();
     unsigned int v = 0;
@@ -203,6 +146,7 @@ bool randomNodes::run()
             break;
         }
     }
+    cout << "Random source node is " << randSource << " .\nRandom destination node is " << randDestination << ".";
 
     unsigned int maxID = max(randSource,randDestination);
 
@@ -224,7 +168,7 @@ bool randomNodes::run()
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Implementation of Dijkstra's Algorithm complete...");
+        pluginProgress->setComment("Two random nodes generated and highlighted for testing..");
         pluginProgress->progress(STEPS, STEPS);
     }
 

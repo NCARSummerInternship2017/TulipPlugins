@@ -44,7 +44,7 @@ static const char * paramHelp[] = {
   HTML_HELP_CLOSE()
 };
 
-InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
+randomNodes::randomNodes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
 
@@ -55,7 +55,7 @@ InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
 
 
 
-bool ImportInfinibandRoutes::run()
+bool randomNodes::run()
 {
     assert(graph);
 

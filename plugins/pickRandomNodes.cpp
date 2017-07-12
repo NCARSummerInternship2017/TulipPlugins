@@ -1,7 +1,6 @@
 //
-// Created by anantat on 7/12/17.
+// Created by anantat on 6/22/17.
 //
-
 /**
  *
  * This file is part of Tulip (www.tulip-software.org)
@@ -29,27 +28,34 @@
 #include "ibautils/ib_parser.h"
 #include "ibautils/regex.h"
 
+#include <tulip/BooleanProperty.h>
+
 
 using namespace tlp;
 using namespace std;
+
 
 PLUGIN(randomNodes)
 
 static const char * paramHelp[] = {
         // File to Open
         HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname" ) \*/
+  /*HTML_HELP_DEF( "type", "pathname")*/ \
   HTML_HELP_BODY() \
-  "Path to ibdiagnet2.fdbs file to import" \
+  "Hello World" \
   HTML_HELP_CLOSE()
 };
 
-randomNodes::randomNodes(tlp::PluginContext* context)
+randomNodes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-
+    addInParameter<std::string>("file::filename", paramHelp[0],"");
 
 }
+
+namespace ib = infiniband;
+namespace ibp = infiniband::parser;
+
 
 
 
@@ -59,7 +65,7 @@ bool randomNodes::run()
 {
     assert(graph);
 
-    static const size_t STEPS = 2;
+    static const size_t STEPS = 5;
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
@@ -67,38 +73,73 @@ bool randomNodes::run()
         pluginProgress->progress(0, STEPS);
     }
 
+    /**
+     * while this does not import
+     * nodes/edges, it imports properties
+     * for an existing fabric
+     */
 
+    ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
+    if(!fabric)
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
 
-
+        return false;
+    }
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Processing..");
+        pluginProgress->setComment("Found Fabric");
         pluginProgress->progress(1, STEPS);
     }
 
+    /**
+     * Open file to read and import per type
+     */
+    std::string filename;
 
+    dataSet->get("file::filename", filename);
+    std::ifstream ifs(filename.c_str());
+    if(!ifs)
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable open source file.");
 
+        return false;
+    }
 
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Generating random nodes..");
+        pluginProgress->setComment("Parsing Routes.");
     }
 
+    ibp::ibdiagnet_fwd_db parser;
+    
 
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Parsing Routes complete.");
+        pluginProgress->progress(3, STEPS);
+    }
 
+    ifs.close();
 
+    
 
-
-
-
-   //To select to random nodes
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Calculating Route oversubscription.");
+        pluginProgress->progress(4, STEPS);
+    }
+        
+       //To select to random nodes
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
 
     tlp:Iterator<node> *itnodes = graph->getNodes();
 
-    unsigned int v = 0; //Number of nodes
+    int v = 0; //Number of nodes
 
     while(itnodes->hasNext()){
         v++;
@@ -132,13 +173,33 @@ bool randomNodes::run()
     }
 
 
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
 
 
 
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Calculating Route oversubscription complete.");
+        pluginProgress->setComment("Implementation of Dijkstra's Algorithm complete...");
         pluginProgress->progress(STEPS, STEPS);
     }
 

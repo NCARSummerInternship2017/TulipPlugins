@@ -16,7 +16,7 @@ public:
     PLUGININFORMATION("Pick Random Nodes",
     "Ananta Thapaliya",
     "06/16/15",
-    "Picks any two random nodes from the graph for testin.",
+    "Picks any two random nodes from the graph for testing purposes.",
     "alpha",
     "Infiniband")
 

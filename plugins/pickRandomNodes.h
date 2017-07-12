@@ -20,7 +20,7 @@ public:
     "alpha",
     "Infiniband")
 
-    ImportInfinibandRoutes(tlp::PluginContext* context);
+    randomNodes(tlp::PluginContext* context);
 
     /**
      * @brief import infiniband routes

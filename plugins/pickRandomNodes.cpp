@@ -139,7 +139,7 @@ bool randomNodes::run()
 
     tlp:Iterator<node> *itnodes = graph->getNodes();
 
-    int v = 0; //Number of nodes
+    unsigned int v = 0; //Number of nodes
 
     while(itnodes->hasNext()){
         v++;

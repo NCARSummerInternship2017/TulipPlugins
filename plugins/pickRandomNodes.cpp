@@ -181,9 +181,10 @@ bool randomNodes::run()
     while( itnod->hasNext()){
         const node &n = itnod->next();
         v++;
+        cout << n.id<<"\n";
         
     }
-    cout<<"Hellow World! there are "<< v << " nodes in this graph";
+    cout << "Hello World";
     
 
 

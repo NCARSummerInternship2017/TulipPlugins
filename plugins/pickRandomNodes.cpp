@@ -47,7 +47,7 @@ static const char * paramHelp[] = {
   HTML_HELP_CLOSE()
 };
 
-IbHops::IbHops(tlp::PluginContext* context)
+randomNodes::randomNodes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
     addInParameter<std::string>("file::filename", paramHelp[0],"");

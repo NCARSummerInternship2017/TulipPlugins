@@ -58,6 +58,8 @@ namespace ibp = infiniband::parser;
 
 
 
+        
+        
 
 
 
@@ -135,15 +137,19 @@ bool randomNodes::run()
     }
         
        //To select to random nodes
+    
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
+    cout<<"Yes";
 
     tlp:Iterator<node> *itnodes = graph->getNodes();
+    cout<<"Yes";
 
     unsigned int v = 0; //Number of nodes
-
+    cout<<"Yes";
     while(itnodes->hasNext()){
         v++;
     }
+    cout<<"Yes";
 
     unsigned int randSource = 0;
     unsigned int randDestination = 0;
@@ -154,9 +160,10 @@ bool randomNodes::run()
             break;
         }
     }
+    cout<<"Yes";
 
     unsigned int maxID = max(randSource,randDestination);
-
+    cout<<"Yes";
     while(itnodes->hasNext()){
         const node &mynode = itnodes->next();
         if (mynode.id == randSource){
@@ -171,6 +178,7 @@ bool randomNodes::run()
             break;
         }
     }
+    cout<<"YES";
 
 
    

@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <string>
 #include <set>
-#include "realRoutes.h"
+#include "RouteAnalysis_All.h"
 
 #include <tulip/GlScene.h>
 #include <tulip/BooleanProperty.h>
@@ -44,7 +44,7 @@ PLUGIN(RouteAnalysis_All)
 static const char * paramHelp[] = {
   // File to Open
   HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname" ) \*/
+  HTML_HELP_DEF( "type", "pathname" ) \
   HTML_HELP_BODY() \
   "Path to ibdiagnet2.fdbs file to import" \
   HTML_HELP_CLOSE()
@@ -53,7 +53,7 @@ static const char * paramHelp[] = {
 RouteAnalysis_All::RouteAnalysis_All(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-    //addInParameter<std::string>("file::filename", paramHelp[0],"");
+    addInParameter<std::string>("file::filename", paramHelp[0],"");
 }
 
 
@@ -232,7 +232,17 @@ bool RouteAnalysis_All::run(){
     /**
      * Open file to read and import per type
      */
-    
+    std::string filename;
+
+    dataSet->get("file::filename", filename);
+    std::ifstream ifs(filename.c_str());
+    if(!ifs)
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable open source file.");
+
+        return false;
+    }
 
     if(pluginProgress)
     {
@@ -241,11 +251,25 @@ bool RouteAnalysis_All::run(){
     }
 
     ibp::ibdiagnet_fwd_db parser;
-    
+    if(!parser.parse(*fabric, ifs))
+    {
+        if(pluginProgress)
+            pluginProgress->setError("Unable parse routes file.");
+
+        return false;
+    }
+
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Parsing Routes complete.");
+        pluginProgress->progress(3, STEPS);
+    }
+
+    ifs.close();
 
 
     if (pluginProgress) {
-        pluginProgress->setComment("Found path source and target entities..");
+        pluginProgress->setComment("Found path source and target");
         pluginProgress->progress(4, STEPS);
     }
 

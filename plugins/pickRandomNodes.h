@@ -13,7 +13,7 @@
 
 class randomNodes: public tlp::Algorithm {
 public:
-    PLUGININFORMATION("Pick Random Nodes",
+    PLUGININFORMATION("pickRandomNodes",
     "Ananta Thapaliya",
     "06/16/15",
     "Picks any two random nodes from the graph for testing purposes.",

@@ -33,7 +33,7 @@
 using namespace tlp;
 using namespace std;
 
-PLUGIN(pickRandomNodes)
+PLUGIN(randomNodes)
 
 static const char * paramHelp[] = {
         // File to Open

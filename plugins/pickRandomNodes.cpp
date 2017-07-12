@@ -23,7 +23,7 @@
  */
 
 #include<fstream>
-#include "routes.h"
+#include "pickRandomNodes.h"
 #include "fabric.h"
 #include "ibautils/ib_fabric.h"
 #include "ibautils/ib_parser.h"
@@ -38,7 +38,7 @@ PLUGIN(ImportInfinibandRoutes)
 static const char * paramHelp[] = {
         // File to Open
         HTML_HELP_OPEN() \
-  HTML_HELP_DEF( "type", "pathname" ) \
+  /*HTML_HELP_DEF( "type", "pathname" ) \*/
   HTML_HELP_BODY() \
   "Path to ibdiagnet2.fdbs file to import" \
   HTML_HELP_CLOSE()

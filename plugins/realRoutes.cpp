@@ -45,7 +45,7 @@ static const char * paramHelp[] = {
   
   // File to Open
   HTML_HELP_OPEN() \
-  HTML_HELP_DEF( "type", "pathname" ) \
+  /*HTML_HELP_DEF( "type", "pathname" ) \*/
   HTML_HELP_BODY() \
   "Path to ibdiagnet2.fdbs file to import" \
   HTML_HELP_CLOSE()
@@ -55,7 +55,7 @@ static const char * paramHelp[] = {
 RouteAnalysis_All::RouteAnalysis_All(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-    addInParameter<std::string>("file::filename", paramHelp[0],"");
+    //addInParameter<std::string>("file::filename", paramHelp[0],"");
 }
 
 
@@ -237,13 +237,7 @@ bool RouteAnalysis_All::run(){
      */
 
     ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-    if(!fabric)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
-
-        return false;
-    }
+    
 
     if(pluginProgress)
     {
@@ -254,44 +248,27 @@ bool RouteAnalysis_All::run(){
     /**
      * Open file to read and import per type
      */
-    std::string filename;
-
-    dataSet->get("file::filename", filename);
-    std::ifstream ifs(filename.c_str());
-    if(!ifs)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable open source file.");
-
-        return false;
-    }
-
+    
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Parsing Routes.");
+        pluginProgress->setComment("Finding the ports..");
     }
 
     ibp::ibdiagnet_fwd_db parser;
-    if(!parser.parse(*fabric, ifs))
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable parse routes file.");
-
-        return false;
-    }
+    
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Parsing Routes complete.");
+        pluginProgress->setComment("Finding the LID..");
         pluginProgress->progress(3, STEPS);
     }
 
-    ifs.close();
+    
 
 
     if (pluginProgress) {
-        pluginProgress->setComment("Found path source and target");
+        pluginProgress->setComment("Found source and target entity..");
         pluginProgress->progress(4, STEPS);
     }
 

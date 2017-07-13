@@ -116,10 +116,12 @@ bool testRandom::run()
         pluginProgress->setComment("Waiting..");
         pluginProgress->progress(4, STEPS);
     }
+    randomNodes r;
+    RouteAnalysis_All R;
 
     for (int i =0; i <100; i++){
-        randomNodes::run();
-        RouteAnalysis_All::run();
+        r.run();
+        R.run();
     }
 
 

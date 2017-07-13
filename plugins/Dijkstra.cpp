@@ -239,7 +239,8 @@ bool InfinibandAnalysis::run()
     }
    
    vector<node> nodesToEdges; 
-   tlp::BooleanProperty * selectEdges = graph->getLocalProperty<tlp::ColorProperty>("viewSelection");
+   tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
+   
 
     //show the found_path in the tulip
     if(found_path)
@@ -266,7 +267,7 @@ bool InfinibandAnalysis::run()
            if ((graph->hasEdge(n1,n2,true)) && (n1.id!=n2.id)){
               vector<edge> edges = graph->getEdges(n1,n2);
               const tlp::edge &e = edges[0];
-              selectEdges->setEdgeValue(e, true);
+              selectBool->setEdgeValue(e, true);
            }
         }
      }

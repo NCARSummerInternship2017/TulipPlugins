@@ -61,7 +61,7 @@ namespace ibp = infiniband::parser;
 
 
 
-bool randomNodes::run()
+bool testRandom::run()
 {
     assert(graph);
 

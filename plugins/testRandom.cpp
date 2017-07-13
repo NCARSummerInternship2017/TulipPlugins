@@ -37,7 +37,7 @@ using namespace tlp;
 using namespace std;
 
 /*PLUGIN(ImportInfinibandRoutes)*/
-PLUGIN(randomNodes)
+PLUGIN(testRandom)
 
 static const char * paramHelp[] = {
         // File to Open

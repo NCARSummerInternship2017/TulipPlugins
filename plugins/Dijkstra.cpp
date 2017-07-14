@@ -247,7 +247,7 @@ bool InfinibandAnalysis::run()
     if(found_path)
     {
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
-       mypath.insert(mypath.begin(),path_node[1])
+       mypath.insert(mypath.begin(),path_node[1]);
        
        itnodes = graph->getNodes();
        

@@ -281,7 +281,7 @@ bool InfinibandAnalysis::run()
        
        for(unsigned int i = 0; i<nodesToEdges.size()-1; i++){
           vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
-          cost tlp::edge &e = edges.front();
+          const tlp::edge &e = edges.front();
           selectBool->setEdgeValue(e,true);
        }
     

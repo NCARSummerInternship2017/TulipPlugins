@@ -238,7 +238,7 @@ bool InfinibandAnalysis::run()
         ibHop->setNodeValue(node, temp);
     }
    
-   vector<node> nodesToEdges; 
+    
    
    tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
    
@@ -274,12 +274,14 @@ bool InfinibandAnalysis::run()
         }
      }*/
    
-   for (unsigned int i=0;i<nodesToEdges.size()-1 ; i++){
-      if (graph->hasEdge(nodesToEdges.at(i),nodesToEdges.at(i+1),true)){
-         vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
-         const tlp::edge &e = edges[0];
-         selectBool->setEdgeValue(e,true);
-      }
+   for(int i = 0; i<mypath.size()-1; i++){
+            const tlp::node &source = find_node(mypath[i]);
+            tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
+            while(itedges->hasNext()){
+                const tlp::edge &edge = itedges->next();
+                if(graph->target(edge).id == mypath[i+1])
+                    selectBool->setEdgeValue(edge, true);
+            }
    }
        
        

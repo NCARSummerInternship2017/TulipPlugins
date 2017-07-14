@@ -280,11 +280,10 @@ bool InfinibandAnalysis::run()
        }
        
        for(unsigned int i = 0; i<nodesToEdges.size()-1; i++){
-            vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
-            cost tlp::edge &e = edges.front();
-            selectBool->setEdgeValue(e,true);
+          vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
+          cost tlp::edge &e = edges.front();
+          selectBool->setEdgeValue(e,true);
        }
-    }
     
      /*for (node n1: nodesToEdges){
         for (node n2: nodesToEdges){

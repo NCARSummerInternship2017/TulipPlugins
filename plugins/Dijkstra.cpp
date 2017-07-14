@@ -272,7 +272,7 @@ bool InfinibandAnalysis::run()
              }
           }
        }
-       for (node tmp: nodesToEdges){
+       for (tlp::node tmp: nodesToEdges){
           cout<<"aaaa"<<tmp.id;
        }
     }
@@ -298,6 +298,7 @@ bool InfinibandAnalysis::run()
        } catch(...){
           continue;
        }
+    }
    
    
        

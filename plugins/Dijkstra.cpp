@@ -276,7 +276,7 @@ bool InfinibandAnalysis::run()
        for (tlp::node tmp: nodesToEdges){
           cout<<"aaaa"<<tmp.id;
        }
-       for(unsigned int i = 0; i<mypath.size(); i++){
+       for(unsigned int i = 0; i<nodesToEdges.size()-1; i++){
           vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1),true);
           const tlp::edge &e = edges.at(0);
           selectBool->setEdgeValue(e,true);

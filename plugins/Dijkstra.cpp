@@ -134,8 +134,7 @@ const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
       if(node.id == id)
          return node;
    }
-   itnodes = graph->getNodes();
-   return itnodes->next();
+   
 }
 
 
@@ -257,7 +256,8 @@ bool InfinibandAnalysis::run()
     //show the found_path in the tulip
     vector<node> nodesToEdges;
     nodesToEdges.insert(nodesToEdges.begin(),1,find_node(path_node[1]));
-    
+    cout <<"YES";
+    cout <<path_node[1];
     if(found_path){
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
        itnodes = graph->getNodes();
@@ -273,12 +273,10 @@ bool InfinibandAnalysis::run()
              }
           }
        }
+       for (node tmp: nodesToEdges){
+          cout<<"aaaa"<tmp.id;
        
-       for(unsigned int i = 0; i<nodesToEdges.size()-1; i++){
-          vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
-          const tlp::edge &e = edges.front();
-          selectBool->setEdgeValue(e,true);
-       }
+      
     
      /*for (node n1: nodesToEdges){
         for (node n2: nodesToEdges){
@@ -290,6 +288,12 @@ bool InfinibandAnalysis::run()
         }
      }*/
     }
+       
+    for(unsigned int i = 0; i<(nodesToEdges.size()-1); i++){
+          vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
+          const tlp::edge &e = edges.at(0);
+          selectBool->setEdgeValue(e,true);
+       }
    
    
        

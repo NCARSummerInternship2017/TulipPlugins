@@ -134,6 +134,8 @@ const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
       if(node.id == id)
          return node;
    }
+   itnodes = graph->getNodes();
+   return itnodes->next();
 }
 
 
@@ -211,7 +213,8 @@ bool InfinibandAnalysis::run()
         path_node[path_id++] = mynode.id;
     }
    
-   if(path_id >1) found_path = true;
+   if(path_id >1)
+      found_path = true;
    
     nodes_map *graphAnalysis = new nodes_map(graph,v);
     //test first and modify to select source by user
@@ -249,19 +252,14 @@ bool InfinibandAnalysis::run()
    
     
    
-   tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
    
 
     //show the found_path in the tulip
     vector<node> nodesToEdges;
     nodesToEdges.insert(nodesToEdges.begin(),1,find_node(path_node[1]));
     
-    if(found_path)
-    {
+    if(found_path){
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
-       
-       
-       
        itnodes = graph->getNodes();
        
        
@@ -291,6 +289,7 @@ bool InfinibandAnalysis::run()
            }
         }
      }*/
+    }
    
    
        

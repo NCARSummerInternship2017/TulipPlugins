@@ -257,7 +257,7 @@ bool InfinibandAnalysis::run()
 
     //show the found_path in the tulip
     vector<node> nodesToEdges;
-    nodesToEdges.insert(nodesToEdges.begin(),1,find_node(pathnode[1]));
+    nodesToEdges.insert(nodesToEdges.begin(),1,find_node(path_node[1]));
     
     if(found_path)
     {

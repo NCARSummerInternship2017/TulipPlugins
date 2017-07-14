@@ -134,7 +134,6 @@ const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
       if(node.id == id)
          return node;
    }
-   
 }
 
 
@@ -292,9 +291,12 @@ bool InfinibandAnalysis::run()
     
        
     for(unsigned int i = 0; i<(nodesToEdges.size()-1); i++){
+       try{
           vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));
           const tlp::edge &e = edges.at(0);
           selectBool->setEdgeValue(e,true);
+       } catch(...){
+          continue;
        }
    
    

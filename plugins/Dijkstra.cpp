@@ -303,3 +303,4 @@ bool InfinibandAnalysis::run()
 
     return true;
 }
+}

@@ -275,6 +275,8 @@ bool InfinibandAnalysis::run()
        }
        for (node tmp: nodesToEdges){
           cout<<"aaaa"<<tmp.id;
+       }
+    }
        
       
     
@@ -287,7 +289,7 @@ bool InfinibandAnalysis::run()
            }
         }
      }*/
-    }
+    
        
     for(unsigned int i = 0; i<(nodesToEdges.size()-1); i++){
           vector<edge> edges = graph->getEdges(nodesToEdges.at(i),nodesToEdges.at(i+1));

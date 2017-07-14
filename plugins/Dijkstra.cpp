@@ -134,6 +134,7 @@ const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
       if(node.id == id)
          return node;
    }
+}
 
 
 
@@ -303,4 +304,4 @@ bool InfinibandAnalysis::run()
 
     return true;
 }
-}
+

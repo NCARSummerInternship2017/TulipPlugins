@@ -239,6 +239,7 @@ bool InfinibandAnalysis::run()
     }
    
    vector<node> nodesToEdges; 
+   
    tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
    
 
@@ -246,6 +247,7 @@ bool InfinibandAnalysis::run()
     if(found_path)
     {
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
+       mypath.insert(0,path_node[1]);
        
        itnodes = graph->getNodes();
        
@@ -262,7 +264,7 @@ bool InfinibandAnalysis::run()
        }
     }
     
-     for (node n1: nodesToEdges){
+     /*for (node n1: nodesToEdges){
         for (node n2: nodesToEdges){
            if ((graph->hasEdge(n1,n2,true)) && (n1.id!=n2.id)){
               vector<edge> edges = graph->getEdges(n1,n2);
@@ -270,7 +272,15 @@ bool InfinibandAnalysis::run()
               selectBool->setEdgeValue(e, true);
            }
         }
-     }
+     }*/
+   
+   for (int i=0;i<nodesToEdges.size()-1 ; i++){
+      if (graph->hasEdge(nodesToEdges[i],nodesToEdges[i+1],true)){
+         vector<edge> edges = graph->getEdges(nodesToEdges[i],nodesToEdges[i+1]);
+         const tlp::edge &e = edges[0];
+         selectBool->setEdgeValue(e,true);
+      }
+   }
        
        
    

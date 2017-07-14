@@ -274,7 +274,7 @@ bool InfinibandAnalysis::run()
           }
        }
        for (node tmp: nodesToEdges){
-          cout<<"aaaa"<tmp.id;
+          cout<<"aaaa"<<tmp.id;
        
       
     

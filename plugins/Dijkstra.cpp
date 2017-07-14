@@ -247,7 +247,7 @@ bool InfinibandAnalysis::run()
     if(found_path)
     {
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
-       mypath.insert(mypath.begin(),path_node[1]);
+       
        
        itnodes = graph->getNodes();
        
@@ -262,6 +262,16 @@ bool InfinibandAnalysis::run()
              }
           }
        }
+       
+       for(int i = 0; i<mypath.size()-1; i++){
+            const tlp::node &source = find_node(mypath[i]);
+            tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
+            while(itedges->hasNext()){
+                const tlp::edge &edge = itedges->next();
+                if(graph->target(edge).id == mypath[i+1])
+                    selectBool->setEdgeValue(edge, true);
+            }
+       }
     }
     
      /*for (node n1: nodesToEdges){
@@ -274,15 +284,7 @@ bool InfinibandAnalysis::run()
         }
      }*/
    
-   for(int i = 0; i<mypath.size()-1; i++){
-            const tlp::node &source = find_node(mypath[i]);
-            tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
-            while(itedges->hasNext()){
-                const tlp::edge &edge = itedges->next();
-                if(graph->target(edge).id == mypath[i+1])
-                    selectBool->setEdgeValue(edge, true);
-            }
-   }
+   
        
        
    

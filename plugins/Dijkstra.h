@@ -15,7 +15,7 @@ using namespace std;
 
 class InfinibandAnalysis: public tlp::Algorithm{
 public:
-    PLUGININFORMATION("InfinibandAnalysis",
+    PLUGININFORMATION("Dijkstra",
     "zzl",
     "06/21/17",
     "Import IB and change some of its porperties",

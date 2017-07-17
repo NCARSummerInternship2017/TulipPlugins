@@ -226,8 +226,8 @@ bool InfinibandAnalysis::run()
    
     
 
-    tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHops");
-    assert(ibHops);
+    tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
+    assert(ibHop);
    
     if(pluginProgress)
     {

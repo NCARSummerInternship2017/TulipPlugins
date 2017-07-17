@@ -29,7 +29,7 @@
 #include <tulip/BooleanProperty.h>
 #include <tulip/ColorProperty.h>
 
-#include "Dijkstra.h"
+#include "InfinibandAnalysis.h"
 
 #include "fabric.h"
 #include "ibautils/ib_fabric.h"
@@ -39,19 +39,19 @@
 using namespace tlp;
 using namespace std;
 
-/*PLUGIN(ImportInfinibandRoutes)*/
+
 PLUGIN(InfinibandAnalysis)
-/**
+
 static const char * paramHelp[] = {
    // File to Open
    HTML_HELP_OPEN() \
-  HTML_HELP_DEF( "type", "pathname") \
+  /*HTML_HELP_DEF( "type", "pathname")*/ \
   HTML_HELP_BODY() \
   "Hello World" \
   HTML_HELP_CLOSE()
 };
-**/
 
+//Constructor
 InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
@@ -59,8 +59,7 @@ InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
 
 }
 
-namespace ib = infiniband;
-namespace ibp = infiniband::parser;
+
 
 //Implementing min_distance
 int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nodes_map::myNode*> map1, bool visited[]){
@@ -75,14 +74,14 @@ int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nod
     return min_index;
 }
 
-//Printing the route
+//Printing the result on the terminal as the plugin runs
 void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nodes_map::myNode*> map1) {
     for(int i = 0; i<v; i++){
         cout<<i<<" is from: "<<map1[i]->getFrom()<<" its distance is: "<<map1[i]->getDist()<<endl;
     }
 }
 
-//Implementing Dijkstra's Algorithm
+//Declaration of adjancency matrix
 map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
     map<int, InfinibandAnalysis::nodes_map::myNode*> distmap;
     bool visited[v];
@@ -111,96 +110,92 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
     return distmap;
 }
 
+//Tracing back the path from node to node
 vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
     cout<<"the destination is: "<<target<<endl;
     vector<unsigned int> path;
     int pos = target;
     for(int i = 0; i<v-1; i++){
        path.push_back(pos);
-       cout<<"-->"<<distmap[pos]->getFrom()<<" ";
+       cout<<"next step is: "<<distmap[pos]->getFrom()<<" ";
        pos = distmap[pos]->getFrom();
-       if(pos == src)
-           break;
+       if(pos == src){
+         path.push_back(pos);
+         break;
+       }
     }
     cout<<" "<<endl;
    
    return path;
 }
 
+//A method to find the node from its id
 const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
-   tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
-   while(itnodes->hasNext()){
-      const tlp::node &node = itnodes->next();
-      if(node.id == id){
-         return node;
-      }
-   }
+     tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
+       
+       while(itnodes->hasNext()){
+          const tlp::node &node = itnodes->next();
+             if(node.id == id)
+                return node;  
+       }
+   
+    itnodes = graph->getNodes();
+    return itnodes->next();
 }
-
-
-
 
 
 bool InfinibandAnalysis::run()
 {
     assert(graph);
 
-    static const size_t STEPS = 4;
+    static const size_t STEPS = 5;
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
-        pluginProgress->setComment("Implementing Dijkstra's algorithm on the nodes...");
+        pluginProgress->setComment("Starting to Import Routes");
         pluginProgress->progress(0, STEPS);
     }
 
-    /**
-     * while this does not import
-     * nodes/edges, it imports properties
-     * for an existing fabric
-     */
-
-    
    
+
     if(pluginProgress)
     {
-        pluginProgress->setComment("Running...");
+        pluginProgress->setComment("Implementing Dijkstra's algorithm on the graph...");
         pluginProgress->progress(1, STEPS);
     }
-
-    /**
-     * Open file to read and import per type
-     */
-    
 
     
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
-        pluginProgress->setComment("Calculating the number of nodes..");
+        pluginProgress->setComment("Finalizing the process..");
     }
 
-   
-  
-  
+    
 
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Please wait..");
+        pluginProgress->progress(3, STEPS);
+    }
+
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Calculating the minimum distances..");
+        pluginProgress->progress(4, STEPS);
+    }
    
     tlp::Iterator<tlp::node> *itnod = graph->getNodes();
-    int v = 0;
+    int v = 0; //v is the total number of nodes 
 
     while(itnod->hasNext()){
        itnod->next();
         v++;
     }
    
-   if(pluginProgress)
-    {
-        pluginProgress->progress(3, STEPS);
-        pluginProgress->setComment("Using BooleanProperty to update viewSelection..");
-    }
+    BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection"); //Tulip's Boolean Property to access "viewSelection."
    
-    BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection");
-   
-    tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL);
+    tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL); //Get an iterator to access all the selected nodes( Selection means the Node value of viewSelection is true)
     
     int path_node[2];
     path_node[1]=0;// Default source node is 0
@@ -212,16 +207,14 @@ bool InfinibandAnalysis::run()
         path_node[path_id++] = mynode.id;
     }
    
-   if(path_id >1){
-      found_path = true;
-   }
+   if(path_id >1) found_path = true;
    
     nodes_map *graphAnalysis = new nodes_map(graph,v);
-    //test first and modify to select source by user
+    //test first and then modify to select source by user
     map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
-    //int avg = 1;
+    int avg = 1;
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
         max = std::max(max,mymap[i]->getDist());
@@ -234,13 +227,13 @@ bool InfinibandAnalysis::run()
    
     
 
-    tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
-    assert(ibHop);
+    tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHops");
+    assert(ibHops);
    
     if(pluginProgress)
     {
         pluginProgress->setComment("Show the max min average steps");
-        pluginProgress->progress(4, STEPS);
+        pluginProgress->progress(5, STEPS);
     }
 
     tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
@@ -249,67 +242,42 @@ bool InfinibandAnalysis::run()
         const int &temp = mymap[node.id]->getDist();
         ibHop->setNodeValue(node, temp);
     }
-   
-    
-   
-   
 
-    //show the found_path in the tulip
-    vector<node> nodesToEdges;
-    nodesToEdges.insert(nodesToEdges.begin(),1,find_node(path_node[1]));
-    
-    cout <<path_node[1];
-    if(found_path){
+    //Make the path found visible in graph
+    if(found_path)
+    {
        mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
+       tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
        itnodes = graph->getNodes();
-       
        
        while(itnodes->hasNext()){
           const tlp::node &node = itnodes->next();
           for(unsigned int ID : mypath){
              if(node.id == ID){
-                //resetColor->setNodeValue(node, Color::SpringGreen);
+                resetColor->setNodeValue(node, Color::SpringGreen);
                 selectBool->setNodeValue(node, true);
-                nodesToEdges.push_back(node);
              }
           }
        }
+       
+       //Select the edges of the shortest route between two nodes 
        for(int i = 0; i<mypath.size()-1; i++){
-          const tlp::node &source = find_node(mypath[i]);
-          tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
-          while(itedges->hasNext()){
-             const tlp::edge &edge = itedges->next();
-             if(graph->target(edge).id == mypath[i+1])
-                selectBool->setEdgeValue(edge, true);
+            const tlp::node &source = find_node(mypath[i]);
+            tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
+            while(itedges->hasNext()){
+                const tlp::edge &edge = itedges->next();
+                if(graph->target(edge).id == mypath[i+1])
+                    selectBool->setEdgeValue(edge, true);
             }
         }
-
-       
       
-    
-     /*for (node n1: nodesToEdges){
-        for (node n2: nodesToEdges){
-           if ((graph->hasEdge(n1,n2,true)) && (n1.id!=n2.id)){
-              vector<edge> edges = graph->getEdges(n1,n2);
-              const tlp::edge &e = edges[0];
-              selectBool->setEdgeValue(e, true);
-           }
-        }
-     }*/
-    
-       
-   
-   
-   
-       
-       
+    }
    
     if(pluginProgress)
     {
-        pluginProgress->setComment("Dijkstra's Algorithm implemented...");
+        pluginProgress->setComment("Dijkstra's Algorithm Implemented");
         pluginProgress->progress(STEPS, STEPS);
     }
 
     return true;
 }
-

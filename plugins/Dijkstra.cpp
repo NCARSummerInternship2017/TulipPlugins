@@ -139,8 +139,7 @@ const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
                 return node;  
        }
    
-    itnodes = graph->getNodes();
-    return itnodes->next();
+    
 }
 
 
@@ -261,7 +260,7 @@ bool InfinibandAnalysis::run()
        }
        
        //Select the edges of the shortest route between two nodes 
-       for(int i = 0; i<mypath.size()-1; i++){
+       for(unsigned int i = 0; i<mypath.size()-1; i++){
             const tlp::node &source = find_node(mypath[i]);
             tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
             while(itedges->hasNext()){

@@ -16,3 +16,17 @@ NCAR has created a patch for the seamless import of Infiniband network topologie
  * This plugin imports the file ibdiagnet2.fdbs created by 'ibdiagnet -r' command. Currently, it fills out the ibRoutesOutbound field with number of routes outbound on a given cable (directional edge).
 
 Special thanks to Patrick Mary for his help with this project.
+
+Addition:
+2017 SIParCS Intern: Zhenzhen Liu & Ananta Thapaliya
+This summer project currently consists of 4 plugins that utilize libibautils. These four plugins are aimed to analyse the static topology of infiniband. The four new plugins are described as follows: 
+* HelloWorld:
+ * Tutorial of how to extend tulip and make a tulip plugin. It will print "Hello World in the terminal"
+* Dijkstra Algorithm:
+ * This plugin implements Dijkstra Algorithm. Firstly,for a selected source node in the tulip graph, the algorithm finds the    shortest path between that node and every other node.
+   Second, it can also be used for finding the shortest paths from a single node to another single destination node by    
+   storing the information of shortest path of each node and then tracing back from the destination to the source.
+
+* Real Route Path:
+ * This plugin imports the file ibdiagnet2.fdbs created by 'ibdiagnet -r' command. It will find the real routing path about this two nodes in the infiniband.
+ 

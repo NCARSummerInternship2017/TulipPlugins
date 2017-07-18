@@ -195,7 +195,7 @@ bool InfinibandAnalysis::run()
 //Get an iterator to access all the selected nodes(To select means to set the node value of viewSelection to be true)
     tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL); /
     
-    int path_node[2];
+    int path_node[2]; //an array to store source node and destination node Ids. 
     path_node[1]=0;// Default source node is 0
     int path_id = 0;
     bool found_path = false;
@@ -208,7 +208,7 @@ bool InfinibandAnalysis::run()
    if(path_id >1) found_path = true;
    
     nodes_map *graphAnalysis = new nodes_map(graph,v);
-    //test first and then modify to select source by user
+    
     map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;

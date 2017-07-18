@@ -67,7 +67,7 @@ bool randomNodes::run()
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Random numbers generated..);
+        pluginProgress->setComment("Random numbers generated..");
         pluginProgress->progress(1, STEPS);
     }
 

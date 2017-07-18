@@ -42,16 +42,8 @@ using namespace std;
 
 PLUGIN(InfinibandAnalysis)
 
-static const char * paramHelp[] = {
-   // File to Open
-   HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname")*/ \
-  HTML_HELP_BODY() \
-  "Hello World" \
-  HTML_HELP_CLOSE()
-};
+//----------------------------------------*Constructor*-----------------------------------------------------
 
-//Constructor
 InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
@@ -60,8 +52,8 @@ InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
 }
 
 
+//-----------------------------------------*Implementing min_distance*-----------------------------------------
 
-//Implementing min_distance
 int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nodes_map::myNode*> map1, bool visited[]){
     int min = INT_MAX;
     int min_index = 0;
@@ -74,14 +66,18 @@ int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nod
     return min_index;
 }
 
-//Printing the result on the terminal as the plugin runs
+
+
+//-------------------------------------*Implementing printResult*----------------------------------------
+
 void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nodes_map::myNode*> map1) {
     for(int i = 0; i<v; i++){
         cout<<i<<" is from: "<<map1[i]->getFrom()<<" its distance is: "<<map1[i]->getDist()<<endl;
     }
 }
 
-//Declaration of adjancency matrix
+//---------------------------------------*Implementing Dijkstra's Algorithm*------------------------------
+
 map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
     map<int, InfinibandAnalysis::nodes_map::myNode*> distmap;
     bool visited[v];
@@ -105,12 +101,12 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
             }
         }
     }
-    //printResult(distmap);
-    //cout<<"***********************************"<<endl;
+    
     return distmap;
 }
 
-//Tracing back the path from node to node
+//----------------------------------*Tracing back the path suggested by Dijkstra*------------------------------------
+
 vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
     cout<<"the destination is: "<<target<<endl;
     vector<unsigned int> path;
@@ -129,7 +125,7 @@ vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, Infiniban
    return path;
 }
 
-//A method to find the node from its id
+//--------------------------------*Implementing the method to find node from its id*----------------------------------------------
 const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
      tlp::Iterator<tlp::node> *itnodes = graph->getNodes();
        
@@ -138,16 +134,16 @@ const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
              if(node.id == id)
                 return node;  
        }
-   
-    
 }
 
-
+//----------------------------------------*Tulip's Main Function*----------------------------------------------
 bool InfinibandAnalysis::run()
 {
     assert(graph);
 
     static const size_t STEPS = 5;
+   
+   //PluginProcess interacts with users as the plugin runs
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
@@ -184,17 +180,20 @@ bool InfinibandAnalysis::run()
         pluginProgress->progress(4, STEPS);
     }
    
+   //Calculating the total number on nodes 'v'
     tlp::Iterator<tlp::node> *itnod = graph->getNodes();
-    int v = 0; //v is the total number of nodes 
+    int v = 0; //Initialized to 0 
 
     while(itnod->hasNext()){
        itnod->next();
         v++;
     }
    
+   //Tulip's selection algorithm
     BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection"); //Tulip's Boolean Property to access "viewSelection."
    
-    tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL); //Get an iterator to access all the selected nodes( Selection means the Node value of viewSelection is true)
+//Get an iterator to access all the selected nodes(To select means to set the node value of viewSelection to be true)
+    tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL); /
     
     int path_node[2];
     path_node[1]=0;// Default source node is 0
@@ -259,7 +258,7 @@ bool InfinibandAnalysis::run()
           }
        }
        
-       //Select the edges of the shortest route between two nodes 
+      //Selects the edges that comprise Dijkstra's path 
        for(unsigned int i = 0; i<mypath.size()-1; i++){
             const tlp::node &source = find_node(mypath[i]);
             tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);

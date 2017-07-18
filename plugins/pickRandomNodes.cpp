@@ -36,18 +36,10 @@
 using namespace tlp;
 using namespace std;
 
-/*PLUGIN(ImportInfinibandRoutes)*/
+
 PLUGIN(randomNodes)
 
-static const char * paramHelp[] = {
-        // File to Open
-        HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname")*/ \
-  HTML_HELP_BODY() \
-  "Hello World" \
-  HTML_HELP_CLOSE()
-};
-
+//Constructor 
 randomNodes::randomNodes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
@@ -55,12 +47,9 @@ randomNodes::randomNodes(tlp::PluginContext* context)
 
 }
 
-namespace ib = infiniband;
-namespace ibp = infiniband::parser;
 
 
-
-
+//Tulip's Main Function 
 bool randomNodes::run()
 {
     assert(graph);
@@ -69,24 +58,16 @@ bool randomNodes::run()
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
-        pluginProgress->setComment("Starting to Import Routes");
+        pluginProgress->setComment("Starting to generate random Node Ids...");
         pluginProgress->progress(0, STEPS);
     }
 
     
 
-    ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-    if(!fabric)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
-
-        return false;
-    }
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Found Fabric");
+        pluginProgress->setComment("Random numbers generated..);
         pluginProgress->progress(1, STEPS);
     }
 
@@ -103,7 +84,7 @@ bool randomNodes::run()
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Creating a suitable range for random nodes..");
+        pluginProgress->setComment("Creating a suitable range for the random nodes..");
         pluginProgress->progress(3, STEPS);
     }
 
@@ -118,7 +99,7 @@ bool randomNodes::run()
     }
 
 
-        
+    //Calculating the total number of nodes    
     tlp::Iterator<node> *itnod = graph->getNodes();
     unsigned int v = 0;
 
@@ -126,19 +107,23 @@ bool randomNodes::run()
     while( itnod->hasNext()){
         const node &n = itnod->next();
         v++;
-        cout << n.id<<"\n";
+        
         
     }
-    cout << "There are " << v << " nodes in this graph";
-        
+    
+    cout << "Hello World! \nThere are " << v << " nodes in this graph";
+     
+   //Applying Tulip's selection algorithm...
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
 
     tlp:Iterator<node> *itnodes = graph->getNodes();
 
     
 
-    unsigned int randSource = 0;
-    unsigned int randDestination = 0;
+    unsigned int randSource = 0; //Random source initialized to 0
+    unsigned int randDestination = 0; //Random destination initialized to 0
+    
+    //Creating random numbers of a suitable range
     while (true){
         randSource = rand()%v;
         randDestination = (rand()%v);
@@ -146,10 +131,11 @@ bool randomNodes::run()
             break;
         }
     }
-    cout << "Random source node is " << randSource << " .\nRandom destination node is " << randDestination << ".";
+    cout << "Random source node is " << randSource << " .\nRandom destination node is " << randDestination << ".\n";
 
     unsigned int maxID = max(randSource,randDestination);
 
+    //Selecting the nodes corresponding the two random integers (ids) generated above 
     while(itnodes->hasNext()){
         const node &mynode = itnodes->next();
         if (mynode.id == randSource){
@@ -164,6 +150,7 @@ bool randomNodes::run()
             break;
         }
     }
+    //END
         
 
     if(pluginProgress)

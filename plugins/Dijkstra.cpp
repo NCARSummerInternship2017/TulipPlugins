@@ -212,7 +212,7 @@ bool InfinibandAnalysis::run()
     map<int, InfinibandAnalysis::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
-    int avg = 1;
+    
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
         max = std::max(max,mymap[i]->getDist());

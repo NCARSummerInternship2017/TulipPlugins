@@ -1,6 +1,24 @@
-//
-// Created by zliu58 on 6/21/17.
-//
+/**
+ *
+ * This file is part of Tulip (www.tulip-software.org)
+ *
+ * Authors: David Auber and the Tulip development Team
+ * from LaBRI, University of Bordeaux, University Corporation
+ * for Atmospheric Research
+ *
+ * Tulip is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * Tulip is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ */
+
+
 #include <tulip/TulipPluginHeaders.h>
 #include <tulip/TlpTools.h>
 #include <tulip/Graph.h>
@@ -16,14 +34,15 @@ using namespace std;
 class InfinibandAnalysis: public tlp::Algorithm{
 public:
     PLUGININFORMATION("Dijkstra",
-    "zzl",
+    "Zehzhen Liu & Ananta Thapaliya",
     "06/21/17",
-    "Import IB and change some of its porperties",
+    "Implement Dijkstra's algorithm on the graph",
     "alpha",
     "Infiniband")
 
-    InfinibandAnalysis(tlp::PluginContext* context);
-
+    InfinibandAnalysis(tlp::PluginContext* context); //Constructor 
+    
+//Declaration of adjacency matrix
     class nodes_map{
     private:
         int v; //number of node;
@@ -67,7 +86,7 @@ public:
             }
         }
 
-        //Set up the adjacent_matrix
+        //Initialize the adjacency matrix
         tlp::Iterator<edge> *ite = graph->getEdges();
         while(ite->hasNext()){
             edge e = ite->next();
@@ -78,14 +97,24 @@ public:
             }
         }
     }
-
+ 
+//A method to calculate minimun distance between two nodes
     int min_distance(map<int, myNode*> map1, bool visited[]);
+        
+//A method that implements Dijkstra's algorithm on the graph
     map<int,myNode*> dijkstra(int src);
+        
+//A method that prints the results in the terminal
     void printResult(map<int, myNode*> map1);
+        
+//A method that traces the route suggested by Dijkstra's algorithm
     vector<unsigned int> tracePath(map<int, myNode*> distmap, int target,int src);
     };
 
+//Main function for tulip
     bool run();
+    
+//A method that returns a node from its id
     const tlp::node & find_node(unsigned int id); //Get node form id
 };
 #endif //TULIPTEST_MAIN_H

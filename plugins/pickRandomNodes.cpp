@@ -29,17 +29,14 @@
 #include "ibautils/ib_parser.h"
 #include "ibautils/regex.h"
 #include <stdlib.h> 
-
 #include <tulip/BooleanProperty.h>
-
 
 using namespace tlp;
 using namespace std;
 
-
 PLUGIN(randomNodes)
 
-//Constructor 
+        //Constructor 
 randomNodes::randomNodes(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
@@ -47,13 +44,11 @@ randomNodes::randomNodes(tlp::PluginContext* context)
 
 }
 
-
-
 //Tulip's Main Function 
 bool randomNodes::run()
 {
     assert(graph);
-
+        
     static const size_t STEPS = 5;
     if(pluginProgress)
     {
@@ -62,17 +57,11 @@ bool randomNodes::run()
         pluginProgress->progress(0, STEPS);
     }
 
-    
-
-
     if(pluginProgress)
     {
         pluginProgress->setComment("Random numbers generated..");
         pluginProgress->progress(1, STEPS);
     }
-
-    
-    
 
     if(pluginProgress)
     {
@@ -80,17 +69,11 @@ bool randomNodes::run()
         pluginProgress->setComment("Generating random nodes..");
     }
 
-    
-
     if(pluginProgress)
     {
         pluginProgress->setComment("Creating a suitable range for the random nodes..");
         pluginProgress->progress(3, STEPS);
     }
-
-    
-
-    
 
     if(pluginProgress)
     {
@@ -98,17 +81,13 @@ bool randomNodes::run()
         pluginProgress->progress(4, STEPS);
     }
 
-
     //Calculating the total number of nodes    
     tlp::Iterator<node> *itnod = graph->getNodes();
     unsigned int v = 0;
-
-
+    
     while( itnod->hasNext()){
         const node &n = itnod->next();
         v++;
-        
-        
     }
     
     cout << "Hello World! \nThere are " << v << " nodes in this graph";
@@ -117,8 +96,6 @@ bool randomNodes::run()
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
 
     tlp:Iterator<node> *itnodes = graph->getNodes();
-
-    
 
     unsigned int randSource = 0; //Random source initialized to 0
     unsigned int randDestination = 0; //Random destination initialized to 0
@@ -152,7 +129,6 @@ bool randomNodes::run()
     }
     //END
         
-
     if(pluginProgress)
     {
         pluginProgress->setComment("Two random nodes generated and highlighted for testing..");

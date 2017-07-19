@@ -29,6 +29,9 @@
 #include "ibautils/ib_parser.h"
 #include "ibautils/regex.h"
 #include <stdlib.h> 
+#include <ctime>
+#include <cstdlib>
+
 #include <tulip/BooleanProperty.h>
 
 using namespace tlp;
@@ -102,6 +105,7 @@ bool randomNodes::run()
     
     //Creating random numbers of a suitable range
     while (true){
+        srand(time(NULL));
         randSource = rand()%v;
         randDestination = (rand()%v);
         if ((randSource<v) && (randDestination!=randSource) && (randDestination<v)){

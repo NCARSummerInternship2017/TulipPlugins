@@ -39,7 +39,6 @@
 using namespace tlp;
 using namespace std;
 
-
 PLUGIN(InfinibandAnalysis)
 
 //----------------------------------------*Constructor*-----------------------------------------------------
@@ -51,9 +50,7 @@ InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
 
 }
 
-
 //-----------------------------------------*Implementing min_distance*-----------------------------------------
-
 int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nodes_map::myNode*> map1, bool visited[]){
     int min = INT_MAX;
     int min_index = 0;
@@ -66,10 +63,7 @@ int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nod
     return min_index;
 }
 
-
-
 //-------------------------------------*Implementing printResult*----------------------------------------
-
 void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nodes_map::myNode*> map1) {
     for(int i = 0; i<v; i++){
         cout<<i<<" is from: "<<map1[i]->getFrom()<<" its distance is: "<<map1[i]->getDist()<<endl;
@@ -77,7 +71,6 @@ void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nod
 }
 
 //---------------------------------------*Implementing Dijkstra's Algorithm*------------------------------
-
 map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
     map<int, InfinibandAnalysis::nodes_map::myNode*> distmap;
     bool visited[v];
@@ -104,7 +97,6 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
     
     return distmap;
 }
-
 //----------------------------------*Tracing back the path suggested by Dijkstra*------------------------------------
 
 vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
@@ -150,23 +142,18 @@ bool InfinibandAnalysis::run()
         pluginProgress->setComment("Starting to Import Routes");
         pluginProgress->progress(0, STEPS);
     }
-
-   
-
+        
     if(pluginProgress)
     {
         pluginProgress->setComment("Implementing Dijkstra's algorithm on the graph...");
         pluginProgress->progress(1, STEPS);
     }
 
-    
     if(pluginProgress)
     {
         pluginProgress->progress(2, STEPS);
         pluginProgress->setComment("Finalizing the process..");
     }
-
-    
 
     if(pluginProgress)
     {
@@ -223,8 +210,6 @@ bool InfinibandAnalysis::run()
     cout<<""<<endl;
     std::vector<unsigned int> mypath;
    
-    
-
     tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
     assert(ibHop);
    

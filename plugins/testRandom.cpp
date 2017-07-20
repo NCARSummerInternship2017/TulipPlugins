@@ -110,7 +110,7 @@ bool testRandom::run()
         pluginProgress->progress(4, STEPS);
     }
 
-    tlp::BooleanProperty * selectBool = graph->getLocalProperty<tlp::BooleanProperty>("viewSelection");
+    BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection");
 
     for(int i =0;i<1000;i++){
         cout<<"Test: " <<i <<endl;

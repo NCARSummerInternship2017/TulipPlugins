@@ -13,7 +13,7 @@
 #ifndef IB_ROUTES_H
 #define IB_ROUTES_H
 
-class testRandom: public tlp::Algorithm, public randomNodes, public RouteAnalysis_All {
+class testRandom: public tlp::Algorithm {
 public:
     PLUGININFORMATION("Stochastic Analysis",
     "Ananta Thapaliya",

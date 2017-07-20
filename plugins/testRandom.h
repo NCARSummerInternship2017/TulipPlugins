@@ -13,12 +13,12 @@
 #ifndef IB_ROUTES_H
 #define IB_ROUTES_H
 
-class Stochastic: public tlp::Algorithm, public randomNodes, public RouteAnalysis_All {
+class testRandom: public tlp::Algorithm, public randomNodes, public RouteAnalysis_All {
 public:
     PLUGININFORMATION("Stochastic Analysis",
     "Ananta Thapaliya",
     "06/16/15",
-    "Picks any two random nodes from the graph for testing purposes.",
+    "Runs Dijkstra on the graph thousand times for two random nodes each time. ",
     "alpha",
     "Infiniband")
 

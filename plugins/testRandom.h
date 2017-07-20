@@ -27,7 +27,7 @@
 #ifndef IB_ROUTES_H
 #define IB_ROUTES_H
 
-class testRandom: public tlp::Algorithm {
+class Stochastic: public tlp::Algorithm {
 public:
     PLUGININFORMATION("Performs Random Tests",
     "Ananta Thapaliya & Zenzhen Liu",
@@ -37,7 +37,7 @@ public:
     "Infiniband")
 
 //Constructor
-    testRandom(tlp::PluginContext* context);
+    Stochastic(tlp::PluginContext* context);
 
 //Tulip's Main Function 
     bool run();

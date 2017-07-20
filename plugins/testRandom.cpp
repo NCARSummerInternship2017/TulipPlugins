@@ -21,8 +21,8 @@
  *
  */
 
-#include<fstream>
-#include "testRandom"
+#include <fstream>
+#include "testRandom.h"
 #include "fabric.h"
 #include <tulip/GlScene.h>
 #include "ibautils/ib_fabric.h"
@@ -48,7 +48,7 @@ testRandom::testRandom(tlp::PluginContext* context)
 }
 
 //Tulip's Main Function 
-bool randomNodes::run()
+bool testRandom::run()
 {
     assert(graph);
         
@@ -86,7 +86,7 @@ bool randomNodes::run()
 
    
     
-    cout << "Hello World! \nThere are " << v << " nodes in this graph";
+    
      
    //Applying Tulip's selection algorithm...
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
@@ -95,7 +95,7 @@ bool randomNodes::run()
         cout<<"Test: " <<i <<endl;
         graph->applyAlgorithm("Picks two random nodes from the graph", "Sorry! Something went wrong.", NULL, NULL);
         graph->applyAlgorithm("Dijkstra", "Sorry! Something went wrong", NULL, NULL);
-        selectBool->setAllNodeValue(false, graph);
+        pick->setAllNodeValue(false, graph);
     }
    
         

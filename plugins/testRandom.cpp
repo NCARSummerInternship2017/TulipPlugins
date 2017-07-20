@@ -1,3 +1,6 @@
+//
+// Created by anantat on 6/22/17.
+//
 /**
  *
  * This file is part of Tulip (www.tulip-software.org)
@@ -19,55 +22,49 @@
  */
 
 #include<fstream>
-#include "routes.h"
+#include "testRandom"
 #include "fabric.h"
-#include "testRandom.h"
+#include <tulip/GlScene.h>
 #include "ibautils/ib_fabric.h"
 #include "ibautils/ib_parser.h"
 #include "ibautils/regex.h"
+#include <stdlib.h> 
+#include <ctime>
+#include <cstdlib>
 
+#include <tulip/BooleanProperty.h>
 
 using namespace tlp;
 using namespace std;
 
-PLUGIN(testRandom)
+PLUGIN(randomNodes)
 
-
+        //Constructor 
 testRandom::testRandom(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-
+    //addInParameter<std::string>("file::filename", paramHelp[0],"");
 
 }
 
-
-
-
-
-bool testRandom::run()
+//Tulip's Main Function 
+bool randomNodes::run()
 {
     assert(graph);
-
-    static const size_t STEPS = 2;
+        
+    static const size_t STEPS = 5;
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
-        pluginProgress->setComment("Starting to Import Routes");
+        pluginProgress->setComment("Starting to generate random Node Ids...");
         pluginProgress->progress(0, STEPS);
     }
 
-
-
-
-
     if(pluginProgress)
     {
-        pluginProgress->setComment("Processing..");
+        pluginProgress->setComment("Random numbers generated..");
         pluginProgress->progress(1, STEPS);
     }
-
-
-
 
     if(pluginProgress)
     {
@@ -75,31 +72,36 @@ bool testRandom::run()
         pluginProgress->setComment("Generating random nodes..");
     }
 
-
-
-
-
-
-
-
-
-    BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
-
-    for(int i =0;i<1000;i++){
-        cout<<"Test: " <<i <<endl;
-        graph->applyAlgorithm("Picks two random nodes from the graph", "Sorry! Something went wrong.", NULL, NULL);
-        graph->applyAlgorithm("Dijkstra", "Sorry! Something went wrong", NULL, NULL);
-        selectBool->setAllNodeValue(true, graph);
-
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Creating a suitable range for the random nodes..");
+        pluginProgress->progress(3, STEPS);
     }
-
-
-
-
 
     if(pluginProgress)
     {
-        pluginProgress->setComment("Calculating Route oversubscription complete.");
+        pluginProgress->setComment("Waiting..");
+        pluginProgress->progress(4, STEPS);
+    }
+
+   
+    
+    cout << "Hello World! \nThere are " << v << " nodes in this graph";
+     
+   //Applying Tulip's selection algorithm...
+    BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
+    for(int i =0;i<1000;i++)
+    {
+        cout<<"Test: " <<i <<endl;
+        graph->applyAlgorithm("Picks two random nodes from the graph", "Sorry! Something went wrong.", NULL, NULL);
+        graph->applyAlgorithm("Dijkstra", "Sorry! Something went wrong", NULL, NULL);
+        selectBool->setAllNodeValue(false, graph);
+    }
+   
+        
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Two random nodes generated and highlighted for testing..");
         pluginProgress->progress(STEPS, STEPS);
     }
 

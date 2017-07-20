@@ -21,7 +21,7 @@
 #include<fstream>
 #include "routes.h"
 #include "fabric.h"
-#inclulde "testRandom.h"
+#include "testRandom.h"
 #include "ibautils/ib_fabric.h"
 #include "ibautils/ib_parser.h"
 #include "ibautils/regex.h"

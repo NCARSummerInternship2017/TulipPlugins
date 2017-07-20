@@ -37,18 +37,11 @@ using namespace tlp;
 using namespace std;
 
 /*PLUGIN(ImportInfinibandRoutes)*/
-PLUGIN(Stochastic)
+PLUGIN(testRandom)
 
-static const char * paramHelp[] = {
-        // File to Open
-        HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname")*/ \
-  HTML_HELP_BODY() \
-  "Hello World" \
-  HTML_HELP_CLOSE()
-};
 
-Stochastic::Stochastic(tlp::PluginContext* context)
+
+testRandom::testRandom(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
     //addInParameter<std::string>("file::filename", paramHelp[0],"");
@@ -61,7 +54,7 @@ namespace ibp = infiniband::parser;
 
 
 
-bool Stochastic::run()
+bool testRandom::run()
 {
     assert(graph);
 

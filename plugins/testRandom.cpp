@@ -40,7 +40,7 @@ using namespace std;
 PLUGIN(Stochastic)
 
         //Constructor 
-testRandom::testRandom(tlp::PluginContext* context)
+Stochastic::Stochastic(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
     //addInParameter<std::string>("file::filename", paramHelp[0],"");

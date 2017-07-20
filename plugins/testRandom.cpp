@@ -90,11 +90,12 @@ bool Stochastic::run()
      
    //Applying Tulip's selection algorithm...
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
+    string &err = "Sorry! Something went wrong."
     for(int i =0;i<1000;i++)
     {
         cout<<"Test: " <<i <<endl;
-        graph->applyAlgorithm("Picks two random nodes from the graph", "Sorry! Something went wrong.");
-        graph->applyAlgorithm("Dijkstra", "Sorry! Something went wrong");
+        graph->applyAlgorithm("Picks two random nodes from the graph", err);
+        graph->applyAlgorithm("Dijkstra", err);
         pick->setAllNodeValue(false, graph);
     }
    

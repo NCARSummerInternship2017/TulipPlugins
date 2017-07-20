@@ -48,7 +48,7 @@ testRandom::testRandom(tlp::PluginContext* context)
 }
 
 //Tulip's Main Function 
-bool testRandom::run()
+bool Stochastic::run()
 {
     assert(graph);
         

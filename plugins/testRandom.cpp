@@ -37,7 +37,7 @@
 using namespace tlp;
 using namespace std;
 
-PLUGIN(randomNodes)
+PLUGIN(Stochastic)
 
         //Constructor 
 testRandom::testRandom(tlp::PluginContext* context)
@@ -93,8 +93,8 @@ bool testRandom::run()
     for(int i =0;i<1000;i++)
     {
         cout<<"Test: " <<i <<endl;
-        graph->applyAlgorithm("Picks two random nodes from the graph", "Sorry! Something went wrong.", NULL, NULL);
-        graph->applyAlgorithm("Dijkstra", "Sorry! Something went wrong", NULL, NULL);
+        graph->applyAlgorithm("Picks two random nodes from the graph", "Sorry! Something went wrong.");
+        graph->applyAlgorithm("Dijkstra", "Sorry! Something went wrong");
         pick->setAllNodeValue(false, graph);
     }
    

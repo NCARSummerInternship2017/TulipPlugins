@@ -41,14 +41,16 @@ using namespace std;
 
 PLUGIN(InfinibandAnalysis)
 
+        
 //----------------------------------------*Constructor*-----------------------------------------------------
 
 InfinibandAnalysis::InfinibandAnalysis(tlp::PluginContext* context)
-        : tlp::Algorithm(context)
+: tlp::Algorithm(context)
 {
     //addInParameter<std::string>("file::filename", paramHelp[0],"");
 
 }
+
 
 //-----------------------------------------*Implementing min_distance*-----------------------------------------
 int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nodes_map::myNode*> map1, bool visited[]){
@@ -63,12 +65,14 @@ int InfinibandAnalysis::nodes_map::min_distance(map<int, InfinibandAnalysis::nod
     return min_index;
 }
 
+
 //-------------------------------------*Implementing printResult*----------------------------------------
 void InfinibandAnalysis::nodes_map::printResult(map<int, InfinibandAnalysis::nodes_map::myNode*> map1) {
     for(int i = 0; i<v; i++){
         cout<<i<<" is from: "<<map1[i]->getFrom()<<" its distance is: "<<map1[i]->getDist()<<endl;
     }
 }
+
 
 //---------------------------------------*Implementing Dijkstra's Algorithm*------------------------------
 map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::dijkstra(int src) {
@@ -97,6 +101,8 @@ map<int,InfinibandAnalysis::nodes_map::myNode*> InfinibandAnalysis::nodes_map::d
     
     return distmap;
 }
+
+
 //----------------------------------*Tracing back the path suggested by Dijkstra*------------------------------------
 
 vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, InfinibandAnalysis::nodes_map::myNode*> distmap, int target, int src){
@@ -116,6 +122,7 @@ vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, Infiniban
    
    return path;
 }
+
 
 //--------------------------------*Implementing the method to find node from its id*----------------------------------------------
 const tlp::node & InfinibandAnalysis::find_node(unsigned int id){
@@ -176,7 +183,8 @@ bool InfinibandAnalysis::run()
         v++;
     }
    
-   //Tulip's selection algorithm
+        
+//Tulip's selection algorithm
     BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection"); //Tulip's Boolean Property to access "viewSelection."
    
 //Get an iterator to access all the selected nodes(To select means to set the node value of viewSelection to be true)

@@ -97,7 +97,7 @@ bool randomNodes::run()
    //Applying Tulip's selection algorithm...
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
 
-    Iterator<node> *itnodes = graph->getNodes();
+    tlp::Iterator<node> *itnodes = graph->getNodes();
 
     unsigned int randSource = 0; //Random source initialized to 0
     unsigned int randDestination = 0; //Random destination initialized to 0

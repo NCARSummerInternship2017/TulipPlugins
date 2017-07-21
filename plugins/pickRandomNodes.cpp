@@ -105,7 +105,7 @@ bool randomNodes::run()
     
     //Creating random numbers of a suitable range
     while (true){
-        srand(time(NULL));
+        srand(time(time(0)));
         randSource = rand()%v;
         randDestination = (rand()%v);
         if ((randSource<v) && (randDestination!=randSource) && (randDestination<v)){

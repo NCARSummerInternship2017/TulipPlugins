@@ -174,20 +174,21 @@ bool InfinibandAnalysis::run()
         pluginProgress->progress(4, STEPS);
     }
    
-   //Calculating the total number on nodes 'v'
+   
+    //Get the total number of nodes 'v'
     tlp::Iterator<tlp::node> *itnod = graph->getNodes();
-    int v = 0; //Initialized to 0 
 
+    int v = 0; 
     while(itnod->hasNext()){
        itnod->next();
         v++;
     }
    
         
-//Tulip's selection algorithm
+    //Tulip's selection algorithm
     BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection"); //Tulip's Boolean Property to access "viewSelection."
    
-//Get an iterator to access all the selected nodes(To select means to set the node value of viewSelection to be true)
+    //Get an iterator to access all the selected nodes(To select means to set the node value of viewSelection to be true)
     tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL); 
     
     int path_node[2]; //an array to store source node and destination node Ids. 

@@ -111,7 +111,7 @@ vector<unsigned int> InfinibandAnalysis::nodes_map::tracePath(map<int, Infiniban
     int pos = target;
     for(int i = 0; i<v-1; i++){
        path.push_back(pos);
-       cout<<"next step is: "<<distmap[pos]->getFrom()<<" ";
+       cout<<"<--"<<distmap[pos]->getFrom()<<" ";
        pos = distmap[pos]->getFrom();
        if(pos == src){
          path.push_back(pos);

@@ -35,10 +35,10 @@
 namespace ib = infiniband;
 
 class RouteAnalysis: public tlp::Algorithm{
-    PLUGININFORMATION("Real Routes",
+    PLUGININFORMATION("Real Routes Path",
                       "zz",
                       "06/27/2017",
-                      "print out the real routing path",
+                      "Find out the real routing path",
                       "alphe",
                       "Infiniband");
 public:

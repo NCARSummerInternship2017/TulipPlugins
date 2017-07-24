@@ -227,10 +227,7 @@ bool Dijkstra_Path::run()
     cout<<"*************************************************************************"<<endl;
     cout<<""<<endl;
     std::vector<unsigned int> mypath;
-
-
-    tlp::IntegerProperty * ibHop = graph->getProperty<tlp::IntegerProperty>("ibHop");
-    assert(ibHop);
+        
 
     if(pluginProgress)
     {
@@ -242,7 +239,7 @@ bool Dijkstra_Path::run()
     while(itnodes->hasNext()){
         const tlp::node &node = itnodes->next();
         const int &temp = mymap[node.id]->getDist();
-        ibHop->setNodeValue(node, temp);
+   
     }
 
     //show the found_path in the tulip

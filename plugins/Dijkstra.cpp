@@ -191,14 +191,32 @@ bool InfinibandAnalysis::run()
     //Get an iterator to access all the selected nodes(To select means to set the node value of viewSelection to be true)
     tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL); 
     
-    int path_node[2]; //an array to store source node and destination node Ids. 
-    path_node[1]=0;// Default source node is 0
+    int path_node[1]; //an array to store source node and destination node Ids. 
+    path_node[0]=0;// Default source node is 0
     int path_id = 0;
-    bool found_path = false;
    
     while(selections->hasNext()){
         const node &mynode = selections->next();
+      
+         //If more than one node are selected show the error
+         if(path_id>=1)
+         {
+           if(pluginProgress)
+             pluginProgress->setError("More than one node are selected");
+
+           return false;
+         }
+      
         path_node[path_id++] = mynode.id;
+    }
+
+    //If no node is selected show the error
+    if(path_id == 0)
+    {
+      if(pluginProgress)
+        pluginProgress->setError("No node is selected");
+
+      return false;
     }
 
    // If select two nodes then find the shortest path between them     
@@ -234,36 +252,6 @@ bool InfinibandAnalysis::run()
         const tlp::node &node = itnodes->next();
         const int &temp = mymap[node.id]->getDist();
         ibHop->setNodeValue(node, temp);
-    }
-
-    //Make the path found visible in graph
-    if(found_path)
-    {
-       mypath = graphAnalysis->tracePath(mymap,path_node[1],path_node[0]);
-       tlp::ColorProperty * resetColor = graph->getLocalProperty<tlp::ColorProperty>("viewColor");
-       itnodes = graph->getNodes();
-       
-       while(itnodes->hasNext()){
-          const tlp::node &node = itnodes->next();
-          for(unsigned int ID : mypath){
-             if(node.id == ID){
-                resetColor->setNodeValue(node, Color::SpringGreen);
-                selectBool->setNodeValue(node, true);
-             }
-          }
-       }
-       
-      //Selects the edges that comprise Dijkstra's path 
-       for(unsigned int i = 0; i<mypath.size()-1; i++){
-            const tlp::node &source = find_node(mypath[i]);
-            tlp::Iterator<tlp::edge> *itedges = graph->getOutEdges(source);
-            while(itedges->hasNext()){
-                const tlp::edge &edge = itedges->next();
-                if(graph->target(edge).id == mypath[i+1])
-                    selectBool->setEdgeValue(edge, true);
-            }
-        }
-      
     }
    
     if(pluginProgress)

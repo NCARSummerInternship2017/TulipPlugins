@@ -141,41 +141,35 @@ bool Dijkstra_Path::run()
     assert(graph);
 
     static const size_t STEPS = 5;
+     //PluginProcess interacts with users as the plugin runs
     if(pluginProgress)
     {
         pluginProgress->showPreview(false);
         pluginProgress->setComment("Starting to Import Routes");
         pluginProgress->progress(0, STEPS);
     }
-
-    /**
-     * while this does not import
-     * nodes/edges, it imports properties
-     * for an existing fabric
-     */
-
-    ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
-    if(!fabric)
-    {
-        if(pluginProgress)
-            pluginProgress->setError("Unable find fabric. Make sure to preserve data when importing data.");
-
-        return false;
-    }
-
+        
     if(pluginProgress)
     {
-        pluginProgress->setComment("Found Fabric");
+        pluginProgress->setComment("Implementing Dijkstra's algorithm on the graph...");
         pluginProgress->progress(1, STEPS);
     }
 
-    /**
-     * calculate routes outbound
-     * from every port on the fabric
-     */
     if(pluginProgress)
     {
-        pluginProgress->setComment("Calculating Route oversubscription.");
+        pluginProgress->progress(2, STEPS);
+        pluginProgress->setComment("Finalizing the process..");
+    }
+
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Please wait..");
+        pluginProgress->progress(3, STEPS);
+    }
+
+    if(pluginProgress)
+    {
+        pluginProgress->setComment("Calculating the minimum distances..");
         pluginProgress->progress(4, STEPS);
     }
 
@@ -192,16 +186,32 @@ bool Dijkstra_Path::run()
     tlp::Iterator<node> *selections = selectBool->getNodesEqualTo(true,NULL);
 
     int path_node[2];
-    path_node[1]=0;// Default source node is 0
+    path_node[0]=0;// Default source node is 0
     int path_id = 0;
-    bool found_path = false;
 
     while(selections->hasNext()){
         const node &mynode = selections->next();
         path_node[path_id++] = mynode.id;
+        
+        //If more than two node are selected show the error
+        if(path_id > 2)
+        {
+           if(pluginProgress)
+           pluginProgress->setError("More than two node are selected");
+
+           return false;
+         }
+       
     }
 
-    if(path_id >1) found_path = true;
+    //If no node is selected show the error
+    if(path_id < 2)
+    {
+      if(pluginProgress)
+        pluginProgress->setError("Path not found");
+
+      return false;
+    }
 
     nodes_map *graphAnalysis = new nodes_map(graph,v);
     //test first and then modify to select source by user

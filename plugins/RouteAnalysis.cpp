@@ -16,7 +16,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
+ *
+ * Created by zliu58 on 6/27/17.
+ * Update by zliu58 on 7/5/17.
+ * Update by zliu58 on 7/11/17.
+ * Update by zliu58 on 7/20/17.
  */
+
 
 #include<fstream>
 #include <algorithm>
@@ -52,17 +58,17 @@ static const char * paramHelp[] = {
 
 };
 
-//Constructor 
 RouteAnalysis::RouteAnalysis(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
     addInParameter<std::string>("file::filename", paramHelp[0],"");
 }
 
+
 namespace ib = infiniband;
 namespace ibp = infiniband::parser;
 
-//A method to get entity from node
+//Find the entity based on node in the fabric : tulip_fabric_t
 const ib::entity_t * RouteAnalysis::getMyEntity(const tlp::node node,ib::tulip_fabric_t * const fabric){
     for(ib::tulip_fabric_t::entity_nodes_t::iterator it1 = fabric->entity_nodes.begin(); it1 != fabric->entity_nodes.end(); ++it1)
         if(it1->second.id == node.id)
@@ -71,7 +77,6 @@ const ib::entity_t * RouteAnalysis::getMyEntity(const tlp::node node,ib::tulip_f
     return nullptr;
 }
 
-//Tulip's Main Function
 bool RouteAnalysis::run(){
     assert(graph);
 
@@ -143,11 +148,12 @@ bool RouteAnalysis::run(){
     ifs.close();
 
 
-    //Finding the source node and target node
+    //Find the source and target nodes of the path
     BooleanProperty *selectBool = graph->getLocalProperty<BooleanProperty>("viewSelection");
     IntegerProperty *getPortNum = graph->getLocalProperty<IntegerProperty>("ibPortNum");
     vector<tlp::node> nodes;
 
+    //Find the selected node in the graph
     tlp::Iterator<tlp::node> *selections = selectBool->getNodesEqualTo(true,NULL);
 
     while(selections->hasNext()){
@@ -155,6 +161,7 @@ bool RouteAnalysis::run(){
         nodes.push_back(mynode);
     }
   
+    //Print source node id and target node id in the terminal
     cout<<"Test the size of vector: "<<nodes.size()<<endl;
     cout<<"source_node_id: "<<nodes[0].id<<endl;
     cout<<"target_node_id: "<<nodes[1].id<<endl;
@@ -163,25 +170,26 @@ bool RouteAnalysis::run(){
     const ib::entity_t * source_entity = getMyEntity(nodes[0],fabric);
     const ib::entity_t * target_entity = getMyEntity(nodes[1],fabric);
 
+    //Print source entity guid and target entity guid in the terminal
     cout<<"source_guid: "<<source_entity->guid<<endl;
     cout<<"target_guid: "<<target_entity->guid<<endl;
     cout<<" -------------------------------- "<<endl;
-  
-    
+
+
+    //ib::lid_t target_lid = target_entity->lid();
     std::vector<ib::entity_t *> tmp;
 
-    //Number of hops initialized to 0
+    // Use to count the number of hops;
     unsigned int count_hops = 0;
 
-    //Check if the source node is HCA(Host Channel Adapter). 
+    // Whether the souce node is HCA or not
     if(getPortNum->getNodeValue(nodes[0])== 1){
-        //Find the only port in that HCA
+        //find the only port in HCA
         const ib::entity_t::portmap_t::const_iterator Myport = source_entity->ports.begin();
 
-        //Use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the corresponding edge. 
+        //use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the edge
         ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
         selectBool->setEdgeValue(Myedge->second, true);
-      
         if(graph->source(Myedge->second).id == nodes[0].id){
             const tlp::edge &e = Myedge->second;
             tmp.push_back(const_cast<ib::entity_t *> (getMyEntity(graph->target(e),fabric)));
@@ -198,26 +206,24 @@ bool RouteAnalysis::run(){
 
     cout<<"tmp vector size: "<<tmp.size()<<endl;
     cout<<tmp.back()->guid<<endl;
-    cout<<"----------Test source entity ends---------------"<<endl;
+    cout<<"----------test source entity end---------------"<<endl;
     
-    //Check if the target is an HCA(Host Channel Adapter). 
+    //Whether the target is HCE or not
     if(getPortNum->getNodeValue(nodes[1])== 1){
-        //Find the only port in HCA( HCA has only one port). 
+        //find the only port in HCA
         const ib::entity_t::portmap_t::const_iterator Myport = target_entity->ports.begin();
 
-        //Use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the edge. 
+        //use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the edge
         ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
-        
-        //Applies Tulip's selection algorithm to the edge. 
+
         selectBool->setEdgeValue(Myedge->second, true);
-      
         if(graph->source(Myedge->second).id == nodes[1].id){
             const tlp::edge &e = Myedge->second;
             const ib::entity_t * real_target = getMyEntity(graph->target(e),fabric);
             ib::lid_t target_lid = real_target->lid();
             while(tmp.back()->guid!= real_target->guid) {
                 const ib::entity_t & temp = *tmp.back();
-                cout<<"The "<<count_hops<<" Step: "<<temp.guid<<endl;
+                cout<<"The "<<count_hops<<" step: "<<temp.guid<<endl;
                 for (
                         ib::entity_t::routes_t::const_iterator
                                 ritr = temp.get_routes().begin(),
@@ -247,16 +253,15 @@ bool RouteAnalysis::run(){
             cout<<"The "<<count_hops<<" step: "<<real_target->guid<<endl;
 
         }else{
-            //Check if the target is an HCA(Host Channel Adapter). 
+            //find the only port in HCA
             const ib::entity_t::portmap_t::const_iterator Myport = target_entity->ports.begin();
 
-            //Use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the corresponding edge. 
+            //use the typedef std::map<port_t*, tlp::edge> port_edges_t to find the edge
             ib::tulip_fabric_t::port_edges_t::iterator Myedge = fabric->port_edges.find(Myport->second);
             const tlp::edge &e = Myedge->second;
             selectBool->setEdgeValue(e, true);
             const ib::entity_t * real_target = getMyEntity(graph->source(e),fabric);
             ib::lid_t target_lid = real_target->lid();
-          
             while(tmp.back()->guid!= real_target->guid) {
                 const ib::entity_t & temp = *tmp.back();
                 cout<<"The "<<count_hops<<" step: "<<temp.guid<<endl;
@@ -293,6 +298,8 @@ bool RouteAnalysis::run(){
             cout<<"The "<<count_hops<<" step: "<<real_target->guid<<endl;
 
         }
+
+
         cout<<"The "<<++count_hops<<" step: "<<target_entity->guid<<endl;
         cout<<" ------------------------" <<endl;
         cout<<"The total hops: "<<count_hops<<endl;
@@ -353,4 +360,3 @@ bool RouteAnalysis::run(){
 
     return true;
 }
-

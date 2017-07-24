@@ -119,9 +119,6 @@ int RouteAnalysis_All::count_hops(const tlp::node source_node, const tlp::node t
     //Set the tulip Properties
     IntegerProperty *getPortNum = graph->getLocalProperty<IntegerProperty>("ibPortNum");
 
-    //Get the entities' map <guid, entity_t> = entities_t
-    //const ib::fabric_t::entities_t &entities_map = fabric->get_entities();
-
     const ib::entity_t * source_entity = getMyEntity(source_node,fabric);
     const ib::entity_t * target_entity = getMyEntity(target_node,fabric);
     

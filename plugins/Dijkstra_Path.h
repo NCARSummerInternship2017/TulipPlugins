@@ -35,7 +35,7 @@ class Dijkstra_Path: public tlp::Algorithm{
 public:
     PLUGININFORMATION("Dijkstra Find Path",
                       "zzl",
-                      "06/21/17",
+                      "07/24/17",
                       "Import IB and change some of its porperties",
                       "alpha",
                       "Infiniband")

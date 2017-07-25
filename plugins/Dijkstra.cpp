@@ -220,7 +220,7 @@ bool InfinibandAnalysis::run()
     }
 
    // If select two nodes then find the shortest path between them     
-   if(path_id >1) found_path = true;
+   
    
     nodes_map *graphAnalysis = new nodes_map(graph,v);
     

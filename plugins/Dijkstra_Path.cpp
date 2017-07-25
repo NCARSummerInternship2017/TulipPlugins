@@ -43,8 +43,8 @@ using namespace std;
 PLUGIN(Dijkstra_Path)
 
 static const char * paramHelp[] = {
-        // File to Open
-        HTML_HELP_OPEN() \
+  // File to Open
+  HTML_HELP_OPEN() \
   /*HTML_HELP_DEF( "type", "pathname")*/ \
   HTML_HELP_BODY() \
   "Hello World" \

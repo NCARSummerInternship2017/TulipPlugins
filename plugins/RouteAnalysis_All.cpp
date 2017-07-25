@@ -60,6 +60,8 @@ RouteAnalysis_All::RouteAnalysis_All(tlp::PluginContext* context)
 namespace ib = infiniband;
 namespace ibp = infiniband::parser;
 
+
+//-----------------------------------------*Find the entity*-----------------------------------------
 const ib::entity_t * RouteAnalysis_All::getMyEntity(const tlp::node node,ib::tulip_fabric_t * const fabric){
     for(ib::tulip_fabric_t::entity_nodes_t::iterator it1 = fabric->entity_nodes.begin(); it1 != fabric->entity_nodes.end(); ++it1)
         if(it1->second.id == node.id)
@@ -68,10 +70,15 @@ const ib::entity_t * RouteAnalysis_All::getMyEntity(const tlp::node node,ib::tul
     return nullptr;
 }
 
+
+//-----------------------------------------*Find next step*-----------------------------------------
 int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph * const graph,
                         std::vector<ib::entity_t *> &tmp, const ib::entity_t * real_target)
 {
+    // Count the step
     int count = 0;
+  
+    //Judge whether the target is reachable or not
     bool find_next = false;
     ib::lid_t target_lid = real_target->lid();
   
@@ -103,6 +110,7 @@ int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph 
             }
         }
       
+        //If doesn't find next step return -1 which means unreachable
         if(!find_next)
         return -1;
     }
@@ -112,6 +120,7 @@ int RouteAnalysis_All::help_count(ib::tulip_fabric_t * const fabric, tlp::Graph 
 }
 
 
+//-----------------------------------------*Count the real routing path hops*-----------------------------------------
 int RouteAnalysis_All::count_hops(const tlp::node source_node, const tlp::node target_node,tlp::Graph * const graph){
     //Get the fabric from the graph
     ib::tulip_fabric_t * const fabric = ib::tulip_fabric_t::find_fabric(graph, false);
@@ -193,7 +202,7 @@ int RouteAnalysis_All::count_hops(const tlp::node source_node, const tlp::node t
     return count;
 }
 
-
+//-----------------------------------------*Plugin*-----------------------------------------
 bool RouteAnalysis_All::run(){
     assert(graph);
 

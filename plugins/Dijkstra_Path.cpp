@@ -101,7 +101,7 @@ vector<unsigned int> Dijkstra_Path::nodes_map::tracePath(map<int, Dijkstra_Path:
     unsigned int pos = target;
     for(int i = 0; i<v-1; i++){
         path.push_back(pos);
-        cout<<"next step is: "<<distmap[pos]->getFrom()<<" ";
+        cout<<"<-- "<<distmap[pos]->getFrom()<<" ";
         pos = distmap[pos]->getFrom();
         if(pos == (unsigned int)src){
             path.push_back(pos);

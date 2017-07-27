@@ -93,7 +93,7 @@ bool randomNodes::run()
         v++;
     }
     
-    cout << "Hello World! \nThere are " << v << " nodes in this graph";
+    //cout << "Hello World! \nThere are " << v << " nodes in this graph";
      
    //Applying Tulip's selection algorithm...
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
@@ -112,7 +112,7 @@ bool randomNodes::run()
             break;
         }
     }
-    cout << "Random source node is " << randSource << " .\nRandom destination node is " << randDestination << ".\n";
+    //cout << "Random source node is " << randSource << " .\nRandom destination node is " << randDestination << ".\n";
 
     unsigned int maxID = max(randSource,randDestination);
 

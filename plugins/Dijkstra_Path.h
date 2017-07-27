@@ -33,7 +33,7 @@ using namespace std;
 
 class Dijkstra_Path: public tlp::Algorithm{
 public:
-    PLUGININFORMATION("Dijkstra Find Path",
+    PLUGININFORMATION("Dijkstra(for two nodes)",
                       "zzl",
                       "07/24/17",
                       "Import IB and change some of its porperties",

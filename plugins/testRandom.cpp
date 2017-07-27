@@ -100,7 +100,7 @@ bool Stochastic::run()
         graph->applyAlgorithm("Picks two random nodes from the graph", errMsg);
         graph->applyAlgorithm("Dijkstra(for two nodes)", errMsg);
         pick->setAllNodeValue(false,graph);
-        std::this_thread::sleep_for (std::chrono::seconds(1));
+        
     }
    
         

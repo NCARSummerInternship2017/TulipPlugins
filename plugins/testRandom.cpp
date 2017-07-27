@@ -96,7 +96,7 @@ bool Stochastic::run()
     for(int i =0;i<1000;i++)
     {
         
-        cout<<"Test: " <<i <<endl;
+        cout<<"Test " <<i << " ";
         graph->applyAlgorithm("Picks two random nodes from the graph", errMsg);
         graph->applyAlgorithm("Dijkstra(for two nodes)", errMsg);
         pick->setAllNodeValue(false,graph);

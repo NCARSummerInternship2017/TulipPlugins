@@ -95,11 +95,15 @@ bool Stochastic::run()
     
     for(int i =0;i<1000;i++)
     {
+        using namespace std::chrono_literals;
+        auto start = std::chrono::high_resolution_clock::now();
+        std::this_thread::sleep_for(1s);
+        auto end = std::chrono::high_resolution_clock::now();
         cout<<"Test: " <<i <<endl;
         graph->applyAlgorithm("Picks two random nodes from the graph", errMsg);
         graph->applyAlgorithm("Dijkstra(for two nodes)", errMsg);
         pick->setAllNodeValue(false,graph);
-        std::this_thread::sleep_for (std::chrono::seconds(1));
+        
     }
    
         

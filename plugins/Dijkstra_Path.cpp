@@ -96,19 +96,20 @@ map<int,Dijkstra_Path::nodes_map::myNode*> Dijkstra_Path::nodes_map::dijkstra(in
 }
 
 vector<unsigned int> Dijkstra_Path::nodes_map::tracePath(map<int, Dijkstra_Path::nodes_map::myNode*> distmap, int target, int src){
-    cout<<"the destination is: "<<target<<endl;
+    //cout<<"the destination is: "<<target<<endl;
     vector<unsigned int> path;
     unsigned int pos = target;
     for(int i = 0; i<v-1; i++){
         path.push_back(pos);
-        cout<<"<-- "<<distmap[pos]->getFrom()<<" ";
+        //cout<<"<-- "<<distmap[pos]->getFrom()<<" ";
         pos = distmap[pos]->getFrom();
         if(pos == (unsigned int)src){
             path.push_back(pos);
             break;
         }
     }
-    cout<<" "<<endl;
+    
+    //cout<<" "<<endl;
 
     return path;
 }
@@ -211,14 +212,15 @@ bool Dijkstra_Path::run()
     map<int, Dijkstra_Path::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
+    cout << mymap.size() << endl; 
 
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
         max = std::max(max,mymap[i]->getDist());
     }
 
-    cout<<"*************************************************************************"<<endl;
-    cout<<""<<endl;
+    //cout<<"*************************************************************************"<<endl;
+    //cout<<""<<endl;
     std::vector<unsigned int> mypath;
         
 

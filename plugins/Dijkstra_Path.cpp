@@ -42,19 +42,12 @@ using namespace std;
 /*PLUGIN(ImportInfinibandRoutes)*/
 PLUGIN(Dijkstra_Path)
 
-static const char * paramHelp[] = {
-  // File to Open
-  HTML_HELP_OPEN() \
-  /*HTML_HELP_DEF( "type", "pathname")*/ \
-  HTML_HELP_BODY() \
-  "Hello World" \
-  HTML_HELP_CLOSE()
-};
+
 
 Dijkstra_Path::Dijkstra_Path(tlp::PluginContext* context)
         : tlp::Algorithm(context)
 {
-    addInParameter<std::string>("file::filename", paramHelp[0],"");
+    //addInParameter<std::string>("file::filename", paramHelp[0],"");
 
 }
 

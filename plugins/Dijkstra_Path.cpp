@@ -212,7 +212,7 @@ bool Dijkstra_Path::run()
     map<int, Dijkstra_Path::nodes_map::myNode*> mymap = graphAnalysis->dijkstra(path_node[0]);
 
     int max = 1;
-    cout << mymap.size() << endl; 
+    
 
     //Print Distance and find out the max and min numbers
     for(int i = 0; i<v; i++){
@@ -261,6 +261,7 @@ bool Dijkstra_Path::run()
                 selectBool->setEdgeValue(edge, true);
         }
     }
+    cout << mypath.size()<<endl;
 
 
 

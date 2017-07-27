@@ -31,6 +31,7 @@
 #include <stdlib.h> 
 #include <ctime>
 #include <cstdlib>
+#include <chrono>
 
 #include <tulip/BooleanProperty.h>
 
@@ -91,12 +92,14 @@ bool Stochastic::run()
    //Applying Tulip's selection algorithm...
     BooleanProperty * pick = graph->getLocalProperty<BooleanProperty >("viewSelection");
     std::string errMsg; 
+    
     for(int i =0;i<1000;i++)
     {
         cout<<"Test: " <<i <<endl;
         graph->applyAlgorithm("Picks two random nodes from the graph", errMsg);
         graph->applyAlgorithm("Dijkstra", errMsg);
         pick->setAllNodeValue(false,graph);
+        std::this_thread::sleep_for (std::chrono::seconds(1));
     }
    
         
